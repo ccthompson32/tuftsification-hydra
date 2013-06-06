@@ -7,11 +7,11 @@ require "tuftsification-hydra/version"
 Gem::Specification.new do |s|
   s.name        = "tuftsification-hydra"
   s.version     = TuftsificationHydra::VERSION
-  s.authors     = ["TODO: Your name"]
-  s.email       = ["TODO: Your email"]
-  s.homepage    = "TODO"
-  s.summary     = "TODO: Summary of TuftsificationHydra."
-  s.description = "TODO: Description of TuftsificationHydra."
+  s.authors     = ["Mike Korcynski"]
+  s.email       = ["Mike.Korcynski@tufts.edul"]
+  s.homepage    = "http://dl.tufts.edu"
+  s.summary     = "Base code needed to make a hydra head work with Tufts Content."
+  s.description = "Base code needed to make a hydra head work with Tufts Content."
 
   s.files = Dir["{app,config,db,lib}/**/*"] + ["MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["test/**/*"]
