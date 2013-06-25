@@ -11,7 +11,11 @@ namespace :tufts do
   desc "Load hydra-head models"
   task :load_models do
     require "hydra"
-    Dir.glob(File.join(File.expand_path(File.dirname(__FILE__)), "..",'app','models', '*.rb')).each do |model|
+    puts "LOADING MODELS"
+    #Dir.glob(File.join(File.expand_path(File.dirname(__FILE__)), "..",'app','models', '*.rb')).each do |model|
+    a = File.expand_path(File.dirname(__FILE__))
+    puts "#{a}"
+    Dir.glob(File.join(File.expand_path(File.dirname(__FILE__)), ".." ,"..",'app','models', '*.rb')).each do |model|
       load model
     end
   end
