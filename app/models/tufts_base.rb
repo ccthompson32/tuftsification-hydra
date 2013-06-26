@@ -138,9 +138,10 @@ class TuftsBase < ActiveFedora::Base
 
   def to_solr(solr_doc=Hash.new, opts={})
     solr_doc = super
-          create_facets solr_doc
-          index_sort_fields solr_doc
-          solr_doc
+    create_facets solr_doc
+    index_sort_fields solr_doc
+    index_permissions solr_doc
+    solr_doc
 
   end
 

@@ -16,6 +16,11 @@ module Tufts
       solr_doc
 
     end
+
+    def index_permissions(solr_doc)
+      Solrizer.insert_field(solr_doc, 'read_access_group', 'public', :unstemmed_searchable)
+    end
+
     def index_sort_fields(solr_doc)
       #CREATOR SORT
       Solrizer.insert_field(solr_doc, 'author', creator.first, :sortable) unless creator.empty?
