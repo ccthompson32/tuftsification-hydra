@@ -137,7 +137,11 @@ class TuftsBase < ActiveFedora::Base
 
 
   def to_solr(solr_doc=Hash.new, opts={})
-   Tufts::ModelMethods.to_solr(solr_doc,opts)
+    solr_doc = super
+          create_facets solr_doc
+          index_sort_fields solr_doc
+          solr_doc
+
   end
 
   # override this method if you want to restrict the accepted formats to a particular mime-type
