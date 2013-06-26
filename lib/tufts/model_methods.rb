@@ -9,7 +9,7 @@ module Tufts
   module ModelMethods
   include TuftsFileAssetsHelper
 
-    def to_solr(solr_doc=Hash.new, opts={})
+    def self.to_solr(solr_doc=Hash.new, opts={})
       solr_doc = super
       puts "MIKEK"
       create_facets solr_doc
