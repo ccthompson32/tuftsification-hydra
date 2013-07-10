@@ -1,7 +1,9 @@
+require 'settingslogic'
+
 module TuftsFileAssetsHelper
 
   def convert_url_to_local_path(url)
-    local_object_store = Settings.local_object_store
+    local_object_store = Settings.object_store_root
 
     if local_object_store.match(/^\#\{Rails.root\}/)
       local_object_store = "#{Rails.root}" + local_object_store.gsub("\#\{Rails.root\}", "")
