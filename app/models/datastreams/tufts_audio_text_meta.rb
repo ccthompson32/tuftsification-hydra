@@ -1,4 +1,4 @@
-class TuftsAudioTextMeta < ActiveFedora::OmDatastream
+class TuftsAudioTextMeta < TuftsDatastream
 
   set_terminology do |t|
     t.root(:path => "TEI.2", :namespace_prefix => nil, :xmlns => "", :schema => "http://dca.tufts.edu/schema/tei/tei2.dtd")
