@@ -1,6 +1,7 @@
 # COPIED From https://github.com/mkorcy/tdl_hydra_head/blob/master/lib/tufts/model_methods.rb
 require 'chronic'
 require 'titleize'
+require 'tufts/metadata_methods'
 # MISCNOTES:
 # There will be no facet for RCR. There will be no way to reach RCR via browse.
 # 3. There will be a facet for "collection guides", namely EAD, namely the landing page view we discussed on Friday.
@@ -13,12 +14,46 @@ module Tufts
       solr_doc = super
       create_facets solr_doc
       index_sort_fields solr_doc
+      index_permissions solr_doc
       solr_doc
 
     end
 
+  def self.get_metadata(fedora_obj)
+       datastream = fedora_obj.datastreams["DCA-META"]
+
+       # create the union (ie, without duplicates) of subject, geogname, persname, and corpname
+       subjects = []
+       Tufts::MetadataMethods.union(subjects, datastream.subject)
+       Tufts::MetadataMethods.union(subjects, datastream.geogname)
+       Tufts::MetadataMethods.union(subjects, datastream.persname)
+       Tufts::MetadataMethods.union(subjects, datastream.corpname)
+
+       return {
+           :titles => datastream.title,
+           :creators => datastream.creator,
+           :dates => datastream.date_created,
+           :descriptions => datastream.description,
+           :sources => datastream.source,
+           :citable_urls => datastream.identifier,
+           :citations => datastream.bibliographic_citation,
+           :publishers => datastream.publisher,
+           :genres => datastream.genre,
+           :types => datastream.type,
+           :formats => datastream.format,
+           :rights => datastream.rights,
+           :subjects => subjects,
+           :temporals => datastream.temporal
+       }
+     end
+
     def index_permissions(solr_doc)
-      Solrizer.insert_field(solr_doc, 'read_access_group', 'public', :unstemmed_searchable)
+      indexer = Solrizer::Descriptor.new(:string, :stored, :indexed, :multivalued)
+
+      Solrizer.insert_field(solr_doc, 'read_access_group', 'public', indexer)
+
+
+      #Solrizer.insert_field(solr_doc, 'read_access_person', 'public', :unstemmed_searchable)
     end
 
     def index_sort_fields(solr_doc)
