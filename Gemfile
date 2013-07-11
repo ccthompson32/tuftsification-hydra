@@ -8,7 +8,7 @@ gemspec
 # jquery-rails is used by the dummy application
 gem "jquery-rails"
 gem "chronic"
-gem "active-fedora", "~> 6.3.0"
+gem "active-fedora", "~> 6.4.0"
 gem "titleize"
 gem 'settingslogic' # for settings
 # Declare any dependencies that are still in development here instead of in
