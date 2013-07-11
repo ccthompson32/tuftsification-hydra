@@ -42,7 +42,7 @@ module Tufts
       result += "        </div>\n"
       result += "        <div id='controls'></div>\n"
       result += "      </div>\n"
-      result += "      <script type='text/javascript' src='/javascripts/jwplayer6/jwplayer.js'></script>\n"
+      result += "      <script type='text/javascript' src='/assets/jwplayer6/jwplayer.js'></script>\n"
       result += "      <script type='text/javascript'>\n"
       result += "        jwplayer('jw_player').setup({\n"
 
