@@ -51,7 +51,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_play.gif');
+		background-image: url('/assets/media_player/media_player_play.gif');
 		color: transparent;
 		border-right-color: #848484;
 	}
@@ -62,7 +62,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_stop.gif');
+		background-image: url('/assets/media_player/media_player_stop.gif');
 		color: transparent;
 	}
 
@@ -72,7 +72,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_rewind.gif');
+		background-image: url('/assets/media_player/media_player_rewind.gif');
 		color: transparent;
 	}
 
@@ -82,7 +82,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_forward.gif');
+		background-image: url('/assets/media_player/media_player_forward.gif');
 		color: transparent;
 	}
 
@@ -99,7 +99,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_volume.gif');
+		background-image: url('/assets/media_player/media_player_volume.gif');
 		color: transparent;
 		border-left-color: #848484;
 	}
@@ -110,7 +110,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_volumeDown.gif');
+		background-image: url('/assets/media_player/media_player_volumeDown.gif');
 		color: transparent;
 	}
 
@@ -120,7 +120,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_volumeUp.gif');
+		background-image: url('/assets/media_player/media_player_volumeUp.gif');
 		color: transparent;
 	}
 
@@ -130,7 +130,7 @@
 		width: 34px;
 		height: 30px;
 		background-color: transparent;
-		background-image: url('/images/media_player/media_player_fullScreen.gif');
+		background-image: url('/assets/media_player/media_player_fullScreen.gif');
 		color: transparent;
 	}
 

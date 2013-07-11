@@ -156,7 +156,7 @@
 
 	function onTrackStartHandler() {
 		playpauseButton.setAttribute('title', 'Pause');
-		playpauseButton.style.backgroundImage = "url('../images/media_player/media_player_pause.gif')";
+		playpauseButton.style.backgroundImage = "url('/assets//media_player/media_player_pause.gif')";
 
 		// Enable seek buttons
 		seekBackwardButton.disabled = false;
@@ -167,12 +167,12 @@
 
 	function onTrackPauseHandler() {
 		playpauseButton.setAttribute('title', 'Play');
-		playpauseButton.style.backgroundImage = "url('../images/media_player/media_player_play.gif')";
+		playpauseButton.style.backgroundImage = "url('/assets/media_player/media_player_play.gif')";
 	}
 
 	function onTrackIdleHandler() {
 		playpauseButton.setAttribute('title', 'Play');
-		playpauseButton.style.backgroundImage = "url('../images/media_player/media_player_play.gif')";
+		playpauseButton.style.backgroundImage = "url('/assets//media_player/media_player_play.gif')";
 
 		// Disable seek buttons
 		seekBackwardButton.disabled = true;
@@ -204,11 +204,11 @@
 	function onMuteHandler(event) {
 		if (event.mute) {
 			muteButton.setAttribute('title', 'UnMute');
-			muteButton.style.backgroundImage = "url('../images/media_player/media_player_mute.gif')";
+			muteButton.style.backgroundImage = "url('/assets//media_player/media_player_mute.gif')";
 		}
 		else {
 			muteButton.setAttribute('title', 'Mute');
-			muteButton.style.backgroundImage = "url('../images/media_player/media_player_volume.gif')";
+			muteButton.style.backgroundImage = "url('/assets/media_player/media_player_volume.gif')";
 		}
 	}
 
