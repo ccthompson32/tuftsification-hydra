@@ -3,6 +3,11 @@ module TuftsificationHydra
       # Load rake tasks
 #      config.autoload_paths << File.expand_path("../lib/h", __FILE__)
 
+    initializer :append_dependent_assets_path, :group => :all do |app|
+       engine_root = TuftsificationHydra::Engine.root
+       app.config.assets.paths.push(engine_root +'lib/assets/javascripts')
+       app.config.assets.paths.push(engine_root +'lib/assets/stylesheets')
+    end
 
      config.autoload_paths += %W(
        #{config.root}/lib
