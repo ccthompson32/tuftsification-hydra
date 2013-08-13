@@ -186,23 +186,6 @@ module Tufts
     end
 
 
-
-    private # all methods that follow will be made private: not accessible for outside objects
-
-    # convert a transcript time in milliseconds into presentable strings
-    def self.displayable_time(milliseconds)
-      int_total_seconds = milliseconds.to_i / 1000 # truncated to the second
-      int_minutes = int_total_seconds / 60
-      int_just_seconds = int_total_seconds - (int_minutes * 60) # the seconds for seconds:minutes (0:00) display
-      string_minutes = int_minutes.to_s
-      string_just_seconds = int_just_seconds.to_s
-      if (int_just_seconds < 10)
-        string_just_seconds = "0" + string_just_seconds
-      end
-      return string_minutes, string_just_seconds, int_total_seconds.to_s
-    end
-
-
     def self.parse_notations(node)
       result = ""
 
@@ -225,5 +208,22 @@ module Tufts
 
       return result
     end
+
+    private # all methods that follow will be made private: not accessible for outside objects
+
+    # convert a transcript time in milliseconds into presentable strings
+    def self.displayable_time(milliseconds)
+      int_total_seconds = milliseconds.to_i / 1000 # truncated to the second
+      int_minutes = int_total_seconds / 60
+      int_just_seconds = int_total_seconds - (int_minutes * 60) # the seconds for seconds:minutes (0:00) display
+      string_minutes = int_minutes.to_s
+      string_just_seconds = int_just_seconds.to_s
+      if (int_just_seconds < 10)
+        string_just_seconds = "0" + string_just_seconds
+      end
+      return string_minutes, string_just_seconds, int_total_seconds.to_s
+    end
+
+
   end
 end
