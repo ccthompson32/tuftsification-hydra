@@ -28,9 +28,11 @@ module Tufts
       }
     end
 
+     #Deprecated - may not work
     def show_rights
+      warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
-      rights_array = get_values_from_datastream(@document_fedora, "DCA-META", [:rights])
+      rights_array = @document_fedora.datastreams["DCA-META"].rights
 
       if rights_array.empty?
         result << "<a href=\"http://www.tufts.edu\">Link to generic rights statement</a>"
@@ -68,7 +70,7 @@ module Tufts
     end
 
     def showMetadataItemForDatastreamWrap(datastream, label, tagID, metadataKey, wrap_tag)
-      value_array = get_values_from_datastream(@document_fedora, datastream, [metadataKey])
+      value_array = @document_fedora.datastreams[datastream].send(metadataKey)
       result = ""
 
       unless value_array.first.empty?
@@ -79,25 +81,25 @@ module Tufts
 
         value_array.each do |metadataItem|
           if wrap_tag.nil?
-            result += Sanitize.clean(RedCloth.new(metadataItem, [:sanitize_html]).to_html)
+            result += metadataItem
           else
-            result += "<" +wrap_tag + ">" + Sanitize.clean(RedCloth.new(metadataItem, [:sanitize_html]).to_html) + "</" +wrap_tag +">"
+            result += "<" +wrap_tag + ">" + metadataItem + "</" +wrap_tag +">"
           end
         end
 
         unless label.nil?
           result += "</div></div>"
         end
-        result
       end
-
-      return raw(result)
+      raw result
     end
 
 
+     #Deprecated - may not work
     def get_subject_terms
+      warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
-      subject_array = get_values_from_datastream(@document_fedora, "DCA-META", [:subject])
+      subject_array = @document_fedora.datastreams["DCA-META"].subject
 
       unless subject_array.empty?
         result << "<dd>Subject</dd>"
@@ -109,9 +111,11 @@ module Tufts
       raw result
     end
 
+     #Deprecated - may not work
     def get_genre
+      warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
-      genre_array = get_values_from_datastream(@document_fedora, "DCA-META", [:genre])
+      genre_array = @document_fedora.datastreams["DCA-META"].genre
 
       unless genre_array.empty? || genre_array.first.blank?
         result << "<dd>Genre</dd>"
@@ -125,16 +129,20 @@ module Tufts
       raw result
     end
 
+     #Deprecated - may not work
     def get_handle
+      warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result ="<dd>Permanent URL</dd>"
-      handle_array = get_values_from_datastream(@document_fedora, "DCA-META", [:identifier])
+      handle_array = @document_fedora.datastreams["DCA-META"].identifier
       result << "<dt>"+handle_array.first+"</dt>"
       raw result
     end
 
+     #Deprecated - may not work
     def get_original_publication
+      warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
-      bib_array = get_values_from_datastream(@document_fedora, "DCA-META", [:bibliographicCitation])
+      bib_array = @document_fedora.datastreams["DCA-META"].bibliographicCitation
 
       unless bib_array.empty?
         result ="<dd>Original Publication</dd>"
@@ -149,16 +157,18 @@ module Tufts
 
     end
 
+     #Deprecated - may not work
     def show_date
+      warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
-      dates_array = get_values_from_datastream(@document_fedora, "DCA-META", [:dateCreated])
+      dates_array = @document_fedora.datastreams["DCA-META"].dateCreated
 
       if dates_array.first.blank?
-        dates_array = get_values_from_datastream(@document_fedora, "DCA-META", [:temporal])
+        dates_array = @document_fedora.datastreams["DCA-META"].temporal
       end
 
       dates_array.each do |metadataItem|
-        result += "<h6>" + Sanitize.clean(RedCloth.new(metadataItem, [:sanitize_html]).to_html) + "</h6>"
+        result += "<h6>" + metadataItem + "</h6>"
       end
 
       raw result
