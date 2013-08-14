@@ -185,7 +185,13 @@ module Tufts
 
       else
         ebook = ebook.first.gsub('info:fedora/', '')
-        ebook_obj = TuftsTEI.load_instance(ebook)
+        ebook_obj = nil
+        begin
+          ebook_obj=TuftsTEI.find(ebook)
+        rescue ActiveFedora::ObjectNotFoundError => e
+         logger.warn e.message
+        end
+
         if ebook_obj.nil?
           Rails.logger.debug "EAD Nil " + ebook
         else

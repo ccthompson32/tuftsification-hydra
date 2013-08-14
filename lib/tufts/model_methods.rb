@@ -165,7 +165,12 @@ module Tufts
 
       else
         ead = ead.first.gsub('info:fedora/', '')
-        ead_obj = TuftsEAD.load_instance(ead)
+        ead_obj = nil
+        begin
+          ead_obj=TuftsEAD.find(ead)
+        rescue ActiveFedora::ObjectNotFoundError => e
+         logger.warn e.message
+        end
         if ead_obj.nil?
           Rails.logger.debug "EAD Nil " + ead
         else
