@@ -67,7 +67,7 @@ module Tufts
     def create_facets(solr_doc)
       index_names_info(solr_doc)
       index_subject_info(solr_doc)
-    #  index_collection_info(solr_doc)
+      index_collection_info(solr_doc)
       index_date_info(solr_doc)
       index_format_info(solr_doc)
       index_pub_date(solr_doc)
@@ -114,7 +114,7 @@ module Tufts
     end
   end
 
-  
+  #
   # Adds metadata about the depositor to the asset
   # Most important behavior: if the asset has a rightsMetadata datastream, this method will add +depositor_id+ to its individual edit permissions.
   #
@@ -129,31 +129,66 @@ module Tufts
   # result set, in which case the fine tuning enabled by using the RDF instead of the Dublin core would become
   # less relevant.
 
+
   def index_collection_info(solr_doc)
+
+    collections = self.relationships(:is_member_of_collection)
+    ead = self.relationships(:has_description)
+    pid = self.pid.to_s
     ead_title = nil
-    if ead_id.nil?
+
+    if ead.first.nil?
       # there is no hasDescription
-      ead_title = get_collection_from_pid(pid)
+      ead_title = get_collection_from_pid(ead_title, pid)
       if ead_title.nil?
-     #   COLLECTION_ERROR_LOG.error "Could not determine Collection for : #{self.pid}"
+        COLLECTION_ERROR_LOG.error "Could not determine Collection for : #{self.pid}"
       else
         clean_ead_title = Titleize.titleize(ead_title);
-        Solrizer.insert_field(solr_doc, 'collection', clean_ead_title, :facetable) 
+        ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_sim", clean_ead_title)
       end
     else
-      ead_title = Tufts::ModelUtilityMethods.clean_ead_title(ead.title.first)
-      ead_title = get_collection_from_pid(pid, ead_title)
-      clean_ead_title = Titleize.titleize(ead_title)
-      Solrizer.insert_field(solr_doc, 'collection', clean_ead_title, :facetable) 
-      Solrizer.insert_field(solr_doc, 'collection_title', clean_ead_title, :stored_searchable) 
+      ead = ead.first.gsub('info:fedora/', '')
+      begin
+        ead_obj=TuftsEAD.find(ead)
+      rescue ActiveFedora::ObjectNotFoundError => e
+        logger.warn e.message
+      end
 
-      # TODO Facetable and unstemmed_searchable might be equivalent
-      Solrizer.insert_field(solr_doc, 'collection_id', ead_id, :facetable) 
-      Solrizer.insert_field(solr_doc, 'collection_id', ead_id, :unstemmed_searchable) 
+      if ead_obj.nil?
+        Rails.logger.debug "EAD Nil " + ead
+      else
+        ead_title = ead_obj.datastreams["DCA-META"].get_values(:title).first
+        ead_title = Tufts::ModelUtilityMethods.clean_ead_title(ead_title)
+
+        #4 additional collections, unfortunately defined by regular expression parsing. If one of these has hasDescription PID takes precedence
+        #"Undergraduate scholarship": PID in tufts:UA005.*
+        #"Graduate scholarship": PID in tufts:UA015.012.*
+        #"Faculty scholarship": PID in tufts:PB.001.001* or tufts:ddennett*
+        #"Boston Streets": PID in tufts:UA069.005.DO.* should be merged with the facet hasDescription UA069.001.DO.MS102
+
+        ead_title = get_collection_from_pid(ead_title, pid)
+
+
+      end
+
+      unless ead_title.nil?
+        clean_ead_title = Titleize.titleize(ead_title)
+        ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_sim", clean_ead_title)
+        ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_title_sim", clean_ead_title)
+      end
+      ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_id_sim", ead)
+
+      ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_id_unstem_search_sim", ead)
     end
+
+    # unless collections.nil?
+    #   collections.each {|collection|
+    #   ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_facet", "#{collection}") }
+    # end
   end
 
-    def get_ead_title(document)
+
+  def get_ead_title(document)
       collections = document.relationships(:is_member_of_collection)
       ead = document.relationships(:has_description)
       pid = document.pid.to_s
