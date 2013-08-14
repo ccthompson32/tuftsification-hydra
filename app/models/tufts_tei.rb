@@ -4,6 +4,7 @@ class TuftsTEI < TuftsBase
   # not.
 
  # has_metadata :name => "Archival.xml", :type => TuftsRcrMeta
+  has_metadata "Archival.xml", type: TuftsTeiMeta
 
   def to_solr(solr_doc=Hash.new, opts={})
     super
