@@ -30,7 +30,7 @@ module Tufts
 
      #Deprecated - may not work
     def show_rights
-      warn "[DEPRECATION] 'show_rights' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
+      logger.warn "[DEPRECATION] 'show_rights' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
       rights_array = @document_fedora.datastreams["DCA-META"].rights
 
@@ -97,7 +97,7 @@ module Tufts
 
      #Deprecated - may not work
     def get_subject_terms
-      warn "[DEPRECATION] 'get_subject_terms' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
+      logger.warn "[DEPRECATION] 'get_subject_terms' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
       subject_array = @document_fedora.datastreams["DCA-META"].subject
 
@@ -113,7 +113,7 @@ module Tufts
 
      #Deprecated - may not work
     def get_genre
-      warn "[DEPRECATION] 'get_genre' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
+      logger.warn "[DEPRECATION] 'get_genre' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
       genre_array = @document_fedora.datastreams["DCA-META"].genre
 
@@ -131,7 +131,7 @@ module Tufts
 
      #Deprecated - may not work
     def get_handle
-      warn "[DEPRECATION] 'get_handle' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
+      logger.warn "[DEPRECATION] 'get_handle' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result ="<dd>Permanent URL</dd>"
       handle_array = @document_fedora.datastreams["DCA-META"].identifier
       result << "<dt>"+handle_array.first+"</dt>"
@@ -140,7 +140,7 @@ module Tufts
 
      #Deprecated - may not work
     def get_original_publication
-      warn "[DEPRECATION] 'get_original_publication' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
+      logger.warn "[DEPRECATION] 'get_original_publication' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
       bib_array = @document_fedora.datastreams["DCA-META"].bibliographicCitation
 
@@ -159,7 +159,7 @@ module Tufts
 
      #Deprecated - may not work
     def show_date
-      warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
+      logger.warn "[DEPRECATION] 'show_date' is deprecated please use 'Tufts::MetadataMethods.get_metadata instead"
       result =""
       dates_array = @document_fedora.datastreams["DCA-META"].dateCreated
 
