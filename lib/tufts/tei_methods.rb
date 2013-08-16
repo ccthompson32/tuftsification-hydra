@@ -406,14 +406,14 @@ module Tufts
     def self.render_image_page(fedora_obj, chapter)
       result = ""
 
-      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1/div2[@id="' + chapter +'"]/p/figure/head')
+      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1/div2[@id="' + chapter +'"]/p/figure/head|//body/div1[@id="'+chapter+'"]/figure/head')
       unless node_sets.nil?
         node_sets.each do |node|
           result += "<h6>" + node + "</h6><br/>"
         end
       end
 
-      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1/div2[@id="' + chapter +'"]/p/figure')
+      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1/div2[@id="' + chapter +'"]/p/figure|//body/div1[@id="'+chapter+'"]/figure')
       unless node_sets.nil?
         node_sets.each do |node|
           pid = PidMethods.urn_to_pid(node['n'])
@@ -421,7 +421,7 @@ module Tufts
         end
       end
 
-      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1/div2[@id="' + chapter +'"]/p/figure/figDesc')
+      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1/div2[@id="' + chapter +'"]/p/figure/figDesc|//body/div1[@id="'+chapter+'"]/figure/figDesc')
       unless node_sets.nil?
         node_sets.each do |node|
 
@@ -500,7 +500,7 @@ module Tufts
     end
 
     def self.is_chapter_image_book(fedora_obj, chapter)
-      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1[@id="' + chapter +'"]/p|//body/div1/div2[@id="' + chapter +'"]/p|//body/div1[@id="' + chapter +'"]/quote|//body/div1/div2[@id="' + chapter +'"]/quote')
+      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1[@id="'+chapter+'"]/figure|//body/div1[@id="' + chapter +'"]/p|//body/div1/div2[@id="' + chapter +'"]/p|//body/div1[@id="' + chapter +'"]/quote|//body/div1/div2[@id="' + chapter +'"]/quote')
       unless node_sets.nil?
         node_sets.each do |node|
           if node.parent['rend'] == 'page-image'
@@ -538,6 +538,7 @@ module Tufts
       end
 
       #peek ahead and see if this is an image book if not render it as a standard text book.
+#result +="<p> is chapter image book : "+ (is_chapter_image_book(fedora_obj, chapter).to_s) +"</p>"
       if is_chapter_image_book(fedora_obj, chapter)
         result += render_image_page(fedora_obj, chapter)
       else
