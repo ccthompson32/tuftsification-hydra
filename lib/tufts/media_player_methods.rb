@@ -68,14 +68,12 @@ module Tufts
       return result
     end
 
-
     def self.show_participants(fedora_obj, datastream="ARCHIVAL_XML")
-      result = "<div class=\"participant_table\">\n"
+        result = ""
+        participant_number = 0
+        node_sets = fedora_obj.datastreams[datastream].find_by_terms(:participants)
 
-      participant_number = 0
-      node_sets = fedora_obj.datastreams[datastream].find_by_terms(:participants)
-
-      node_sets.each do |node|
+        node_sets.each do |node|
           node.children.each do |child|
             unless child.attributes.empty?
               participant_number += 1
@@ -88,13 +86,14 @@ module Tufts
               result << "        </div> <!-- participant_row -->\n"
             end
           end
+        end
+
+        if result.length > 0
+          result = "<div class=\"participant_table\">\n" + result + "      </div> <!-- participant_table -->\n"
+        end
+
+        return result
       end
-
-      result << "      </div> <!-- participant_table -->\n"
-
-      return result
-    end
-
 
 
     # convert fedora transcript object to html
