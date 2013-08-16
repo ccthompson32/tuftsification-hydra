@@ -122,7 +122,7 @@
 
 	function onTrackStartHandler() {
 		playpause.setAttribute('title', 'Pause');
-		playpause.style.backgroundImage = "url('../images/audio/audio_pause.gif')";
+		playpause.style.backgroundImage = "url('../assets/audio/audio_pause.gif')";
 
 		// Enable seek buttons
 		seekBack.disabled = false;
@@ -133,12 +133,12 @@
 
 	function onTrackPauseHandler() {
 		playpause.setAttribute('title', 'Play');
-		playpause.style.backgroundImage = "url('../images/audio/audio_play.gif')";
+		playpause.style.backgroundImage = "url('../assets/audio/audio_play.gif')";
 	}
 
 	function onTrackIdleHandler() {
 		playpause.setAttribute('title', 'Play');
-		playpause.style.backgroundImage = "url('../images/audio/audio_play.gif')";
+		playpause.style.backgroundImage = "url('../assets/audio/audio_play.gif')";
 
 		// Disable seek buttons
 		seekBack.disabled = true;
@@ -166,11 +166,11 @@
 	function onMuteHandler(event) {
 		if (event.mute) {
 			mute.setAttribute('title', 'UnMute');
-			mute.style.backgroundImage = "url('../images/audio/audio_mute.gif')";
+			mute.style.backgroundImage = "url('../assets/audio/audio_mute.gif')";
 		}
 		else {
 			mute.setAttribute('title', 'Mute');
-			mute.style.backgroundImage = "url('../images/audio/audio_volume.gif')";
+			mute.style.backgroundImage = "url('../assets/audio/audio_volume.gif')";
 		}
 	}
 
