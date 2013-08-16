@@ -163,7 +163,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active-fedora (~> 6.4.0)
   chronic
   jquery-rails
   settingslogic
