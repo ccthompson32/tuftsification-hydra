@@ -36,37 +36,36 @@ module Tufts
 
 
     def self.show_video_player(pid, withTranscript)
-      result = "<div id='player_container'>\n"
-      result += "        <div id='jw_player'>\n"
-      result += "          This div will be replaced by the JW Player.\n"
-      result += "        </div>\n"
-      result += "        <div id='controls'></div>\n"
-      result += "      </div>\n"
-      result += "      <script type='text/javascript' src='/assets/jwplayer6/jwplayer.js'></script>\n"
-      result += "      <script type='text/javascript'>\n"
-      result += "        jwplayer('jw_player').setup({\n"
+       result = "<div id='player_container'>\n"
+       result += "        <div id='jw_player'>\n"
+       result += "          This div will be replaced by the JW Player.\n"
+       result += "        </div>\n"
+       result += "        <div id='controls'></div>\n"
+       result += "      </div>\n"
+       result += "      <script type='text/javascript'>\n"
+       result += "        jwplayer('jw_player').setup({\n"
 
-			if (withTranscript)
-      	result += "          events: {\n"
-      	result += "            onPlay: chooseTranscriptTab,\n"
-      	result += "            onTime: scrollTranscript\n"
-      	result += "          },\n"
-      end
+ 			if (withTranscript)
+       	result += "          events: {\n"
+       	result += "            onPlay: chooseTranscriptTab,\n"
+       	result += "            onTime: scrollTranscript\n"
+       	result += "          },\n"
+       end
 
-#     result += "          skin:                  '/javascripts/jwplayer/TDLVideoSkin/tdlvideoskin.xml',\n"
-      result += "          levels: [\n"
-      result += "            {file: '/file_assets/" + pid + "', type: 'video/mp4'},\n"
-      result += "            {file: '/file_assets/ogg/" + pid + "', type: 'video/ogg'}\n"
-      result += "          ],\n"
-      result += "          width: 445,\n"
-      result += "          height: 335,\n"
-      result += "          primary: 'html5',\n"
-      result += "          controls: true\n"
-      result += "        });\n"
-      result += "      </script>\n"
+       result += "          levels: [\n"
+       result += "            {file: '/file_assets/" + pid + "', type: 'video/mp4'},\n"
+       result += "            {file: '/file_assets/webm/" + pid + "', type: 'video/webm'}\n"
+       result += "          ],\n"
+       result += "          width: 445,\n"
+       result += "          height: 335,\n"
+      # result += "          startparam:'starttime',\n"
+       result += "          primary: 'html5',\n"
+       result += "          controls: true\n"
+       result += "        });\n"
+       result += "      </script>\n"
 
-      return result
-    end
+       return result
+     end
 
     def self.show_participants(fedora_obj, datastream="ARCHIVAL_XML")
         result = ""
