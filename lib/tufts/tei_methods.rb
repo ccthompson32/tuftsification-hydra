@@ -435,19 +435,20 @@ module Tufts
 
     def self.render_text_page(fedora_obj, chapter,footnotes)
       result = self.show_tei_table_start
-
-
+#result += "<p>render_text_page</p>" 
       # get the chapter text.
-      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1[@id="' + chapter +'"]/p|//body/div1/div2[@id="' + chapter +'"]/p|//body/div1[@id="' + chapter +'"]/quote|//body/div1/div2[@id="' + chapter +'"]/quote')
+      node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1[@id="' + chapter +'"]/p|//body/div1/div2[@id="' + chapter +'"]/p|//body/div1[@id="' + chapter +'"]/quote|//body/div1/div2[@id="' + chapter +'"]/quote|//body/div1/div2[@id="' + chapter + '"]|//body/div1[@id="' + chapter + '"]')
       in_left_td = true
-
       unless node_sets.nil?
+        if node_sets.first.name == "div1"
+	  node_sets = node_sets.first.children
+	end
         node_sets.each do |node|
-
           node_text = node.text.to_s.strip
           unless node_text.nil? || node_text.empty?
             result += "<tr>"
             result += "<td class=pagenumber>"
+
             case node.name
               when "pb"
                 result += render_pb(node)
@@ -473,7 +474,19 @@ module Tufts
                 footnotes += footnotes2
                 result += result_p
               when "table"
-                render += render_table(node,in_left_td)
+                result += render_table(node,in_left_td)
+	      when "list"
+		rensult += "<p></p>"
+	      when "lg"
+		if in_left_td
+		  result += switch_to_right
+		  in_left_td = false
+                end
+                result += "<td>"
+                ls = node.children
+                ls.each do |l|
+		 result += "<p>" + l.text.to_s.strip + "</p>"
+                end
               else
                 if in_left_td
                   result += switch_to_right
@@ -510,6 +523,7 @@ module Tufts
           end
         end
       end
+      return false
     end
 
     def self.show_tei_page(fedora_obj, chapter)
