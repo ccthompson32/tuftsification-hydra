@@ -5,6 +5,7 @@ class LocalFileAssetsController < ApplicationController
   include TuftsFileAssetsHelper
   include Tufts::ModelMethods
   include Tufts::MetadataMethods
+  include VideoDeliveryHelper
 
   #before_filter :require_fedora
   #Remove any instance of:
@@ -303,6 +304,7 @@ From file_assets/_new.html.haml
         end
 
         if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
+
           if @file_asset.datastreams.include?("ARCHIVAL_XML")
             send_file(convert_url_to_local_path(@file_asset.datastreams["ARCHIVAL_XML"].dsLocation))
           end
@@ -518,7 +520,8 @@ From file_assets/_new.html.haml
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
         if @file_asset.datastreams.include?("ACCESS_MP4")
-          send_file(convert_url_to_local_path(@file_asset.datastreams["ACCESS_MP4"].dsLocation), :type => 'video/mp4')
+          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["ACCESS_MP4"].dsLocation,'mp4',params[:id])
+          send_file(convert_url_to_local_path(path), :type => 'video/mp4')
         end
       end
 
@@ -561,7 +564,8 @@ From file_assets/_new.html.haml
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
         if @file_asset.datastreams.include?("ACCESS_OGG")
-          send_file(convert_url_to_local_path(@file_asset.datastreams["ACCESS_OGG"].dsLocation), :type => 'video/ogg')
+          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["ACCESS_OGG"].dsLocation,'ogg',params[:id])
+          send_file(convert_url_to_local_path(path), :type => 'video/ogg')
         end
       end
 
@@ -590,7 +594,8 @@ From file_assets/_new.html.haml
 
         if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
           if @file_asset.datastreams.include?("Access.webm")
-            send_file(convert_url_to_local_path(@file_asset.datastreams["Access.webm"].dsLocation), :type => 'video/webm')
+            path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.webm"].dsLocation,'webm',params[:id])
+            send_file(convert_url_to_local_path(path), :type => 'video/webm')
           end
         end
 
