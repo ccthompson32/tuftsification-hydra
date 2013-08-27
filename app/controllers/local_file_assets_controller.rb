@@ -262,6 +262,11 @@ From file_assets/_new.html.haml
         end
       end
 
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
+              if @file_asset.datastreams.include?("Thumbnail.png")
+                send_datastream @file_asset.datastreams["Thumbnail.png"]
+              end
+            end
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
         if @file_asset.datastreams.include?("Thumbnail.png")
           send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation))
@@ -519,8 +524,8 @@ From file_assets/_new.html.haml
       end
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
-        if @file_asset.datastreams.include?("ACCESS_MP4")
-          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["ACCESS_MP4"].dsLocation,'mp4',params[:id])
+        if @file_asset.datastreams.include?("Access.mp4")
+          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.mp4"].dsLocation,'mp4',params[:id])
           send_file(convert_url_to_local_path(path), :type => 'video/mp4')
         end
       end
