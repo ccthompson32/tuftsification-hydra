@@ -59,7 +59,7 @@ module Tufts
        result += "          width: 445,\n"
        result += "          height: 335,\n"
       # result += "          startparam:'starttime',\n"
-       result += "          primary: 'html5',\n"
+       result += "          primary: 'flash',\n"
        result += "          controls: true\n"
        result += "        });\n"
        result += "      </script>\n"
