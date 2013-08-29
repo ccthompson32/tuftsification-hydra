@@ -155,7 +155,28 @@ module Tufts
       return result
     end
 
+    def self.parse_notations(node)
+         result = ""
 
+         node.children.each do |child|
+           childName = child.name
+
+           if (childName == "text")
+             result += child.text
+           elsif (childName == "unclear")
+             result += "<span class=\"transcript_notation\">[" + child.text + "]</span>"
+           elsif (childName == "event" || childName == "gap" || childName == "vocal" || childName == "kinesic")
+             unless child.attributes.empty?
+               desc = child.attributes["desc"]
+               unless desc.nil?
+                 result += "<span class=\"transcript_notation\">[" + desc + "]</span>"
+               end
+             end
+           end
+         end
+
+         return result
+       end
 
     private # all methods that follow will be made private: not accessible for outside objects
 
