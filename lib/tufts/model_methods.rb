@@ -10,15 +10,6 @@ module Tufts
   module ModelMethods
   include TuftsFileAssetsHelper
 
-    def self.to_solr(solr_doc=Hash.new, opts={})
-      solr_doc = super
-      create_facets solr_doc
-      index_sort_fields solr_doc
-      index_permissions solr_doc
-      solr_doc
-
-    end
-
   def self.get_metadata(fedora_obj)
        datastream = fedora_obj.datastreams["DCA-META"]
 
@@ -426,4 +417,3 @@ module Tufts
     end
   end
 end
-
