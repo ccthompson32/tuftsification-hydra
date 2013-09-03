@@ -1,7 +1,9 @@
 require 'tufts/model_methods'
+require 'tufts/indexing_methods'
 
 class TuftsBase < ActiveFedora::Base
   include Tufts::ModelMethods
+  include Tufts::IndexingMethods
   include Hydra::ModelMixins::RightsMetadata
   include AttachedFiles
   
