@@ -526,7 +526,11 @@ From file_assets/_new.html.haml
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
         if @file_asset.datastreams.include?("Access.mp4")
           path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.mp4"].dsLocation,'mp4',params[:id])
-          send_file(convert_url_to_local_path(path), :type => 'video/mp4')
+          if path[/^http:\/\/bucket01/]
+            send_file(convert_url_to_local_path(path), :type => 'video/mp4')
+          else
+            redirect_to path
+          end
         end
       end
 
@@ -600,7 +604,12 @@ From file_assets/_new.html.haml
         if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
           if @file_asset.datastreams.include?("Access.webm")
             path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.webm"].dsLocation,'webm',params[:id])
-            send_file(convert_url_to_local_path(path), :type => 'video/webm')
+            if path[/^http:\/\/bucket01/]
+              send_file(convert_url_to_local_path(path), :type => 'video/webm')
+                      else
+                        redirect_to path
+                      end
+
           end
         end
 
