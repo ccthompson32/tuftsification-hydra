@@ -35,13 +35,15 @@ module Tufts
     end
 
 
-    def self.show_video_player(pid, withTranscript)
+    def self.show_video_player(pid, withTranscript,primary="flash")
        result = "<div id='player_container'>\n"
        result += "        <div id='jw_player'>\n"
        result += "          This div will be replaced by the JW Player.\n"
        result += "        </div>\n"
        result += "        <div id='controls'></div>\n"
        result += "      </div>\n"
+       result += "      <script type='text/javascript' src='/assets/jwplayer6/jwplayer.js'></script>\n"
+       result += "      <script type='text/javascript' src='/assets/jwplayer6/extras.js'></script>\n"
        result += "      <script type='text/javascript'>\n"
        result += "        jwplayer('jw_player').setup({\n"
 
@@ -59,7 +61,7 @@ module Tufts
        result += "          width: 445,\n"
        result += "          height: 335,\n"
       # result += "          startparam:'starttime',\n"
-       result += "          primary: 'flash',\n"
+       result += "          primary: '"+primary+"',\n"
        result += "          controls: true\n"
        result += "        });\n"
        result += "      </script>\n"
