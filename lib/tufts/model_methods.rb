@@ -58,12 +58,12 @@ module Tufts
   private
 
   def index_unstemmed_values(solr_doc)
-    titleize_and_index_array(solr_doc, 'corpname', corpname, :unstemmed_searchable)  
-    titleize_and_index_array(solr_doc, 'geogname', geogname, :unstemmed_searchable)  
-    titleize_and_index_array(solr_doc, 'subject_topic', subject, :unstemmed_searchable)  
-    titleize_and_index_array(solr_doc, 'persname', persname, :unstemmed_searchable)  
-    titleize_and_index_array(solr_doc, 'author', creator, :unstemmed_searchable)  
-    titleize_and_index_single(solr_doc, 'title', title, :unstemmed_searchable)  
+    titleize_and_index_array(solr_doc, 'corpname', self.send(:corpname), :unstemmed_searchable)
+    titleize_and_index_array(solr_doc, 'geogname', self.send(:geogname), :unstemmed_searchable)
+    titleize_and_index_array(solr_doc, 'subject_topic', self.send(:subject), :unstemmed_searchable)
+    titleize_and_index_array(solr_doc, 'persname', self.send(:persname), :unstemmed_searchable)
+    titleize_and_index_array(solr_doc, 'author', self.send(:creator), :unstemmed_searchable)
+    titleize_and_index_single(solr_doc, 'title', self.send(:title), :unstemmed_searchable)
 
   end
 
