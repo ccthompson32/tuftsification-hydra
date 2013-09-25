@@ -35,7 +35,7 @@ module Tufts
     end
 
 
-    def self.show_video_player(pid, withTranscript,primary="flash")
+    def self.show_video_player(pid, withTranscript,primary="html5")
        result = "<div id='player_container'>\n"
        result += "        <div id='jw_player'>\n"
        result += "          This div will be replaced by the JW Player.\n"
@@ -104,7 +104,21 @@ module Tufts
       return html
     end
 
+    def self.get_time_table(fedora_obj, datastream="ARCHIVAL_XML")
+      chunks = TranscriptChunk.parse(fedora_obj, datastream)
+      table = extract_time_table(chunks)
+      table
+    end
 
+    def self.extract_time_table(chunks)
+      table = {}
+      chunks.each do |chunk|
+          milliseconds = chunk.start_in_milliseconds
+          string_minutes, string_just_seconds, string_total_seconds = displayable_time(milliseconds)
+          table[chunk.name.to_s] = {:time => milliseconds, :display_time => string_minutes + ":" + string_just_seconds}
+      end
+      table
+    end
 
     # return html string of the transcript
     # iterate over chunks and create appropriate divs with classes, links, etc.
