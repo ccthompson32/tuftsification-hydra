@@ -155,11 +155,11 @@ module Tufts
       unless ead_title.nil?
         clean_ead_title = Titleize.titleize(ead_title)
         ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_sim", clean_ead_title)
-        ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_title_sim", clean_ead_title)
+        ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_title_tesim", clean_ead_title)
       end
       ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_id_sim", ead)
 
-      ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_id_unstem_search_sim", ead)
+      ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "collection_id_tim", ead)
     end
 
     # unless collections.nil?
