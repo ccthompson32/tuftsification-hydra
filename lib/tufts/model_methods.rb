@@ -74,6 +74,18 @@ module Tufts
     end
   end
 
+
+  def index_corpora_collection(solr_doc)
+    [:subject, :corpname, :persname, :geogname].each do |subject_field|
+      subjects = self.send(subject_field)
+      subjects.each do |subject|
+        if subject == "Bengali Intellectuals Oral History Project" || subject == "Islam on the Indian Ocean Rim" || subject == "Bay of Bengal: Flow of Change"
+          titleize_and_index_single(solr_doc, 'corpora_collection', subject, :facetable)
+        end
+      end
+    end
+  end
+
   def index_subject_info(solr_doc)
     [:subject, :corpname, :persname, :geogname].each do |subject_field|
       subjects = self.send(subject_field)
