@@ -113,7 +113,7 @@ class TranscriptChunk
               end
               who = TranscriptChunk.get_speaker_initials(speaker)
               text = parse_notations(child)
-              current_transcript_chunk.add_utterance(text, who)
+              current_transcript_chunk.add_utterance(text, who, timepoint_id)
             elsif (childName == "event" || childName == "gap" || childName == "vocal" || childName == "kinesic")
               unless child.attributes.empty?
                 desc = child.attributes["desc"]
@@ -141,8 +141,8 @@ class TranscriptChunk
   end
 
   # add an utterance to this transcript chunk
-  def add_utterance(text, speaker_initials = '')
-    utterance = Utterance.new(text, speaker_initials)
+  def add_utterance(text, speaker_initials = '', timepoint_id)
+    utterance = Utterance.new(text, speaker_initials, timepoint_id)
     @utterances << utterance
   end
 
@@ -213,10 +213,12 @@ class TranscriptChunk
   class Utterance
     attr_accessor :text
     attr_reader :speaker_initials
+    attr_reader :timepoint_id
 
-    def initialize(text, speaker_initials = nil)
+    def initialize(text, speaker_initials = nil, timepoint_id)
       @text = text
       @speaker_initials = speaker_initials
+      @timepoint_id = timepoint_id
     end
   end
 
