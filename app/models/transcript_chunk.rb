@@ -118,7 +118,7 @@ class TranscriptChunk
               unless child.attributes.empty?
                 desc = child.attributes["desc"]
                 unless desc.nil?
-                  current_transcript_chunk.add_utterance(desc)
+                  current_transcript_chunk.add_utterance(desc, nil, timepoint_id)
                 end
               end
             end
