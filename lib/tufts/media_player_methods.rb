@@ -149,16 +149,17 @@ module Tufts
         utterances.each do |utterance|
           who = utterance.speaker_initials
           text = utterance.text
+          timepoint_id = utterance.timepoint_id
           if (who)
             result << "                  <div class=\"transcript_row\">\n"
             result << "                    <div class=\"transcript_speaker\">"+ (who.nil? ? "" : who) + "</div>\n"
-            result << "                    <div class=\"transcript_utterance\">"+ (text.nil? ? "" : text) + "</div>\n"
+            result << "                    <div class=\"transcript_utterance\"  id=\""+timepoint_id+"\">"+ (text.nil? ? "" : text) + "</div>\n"
             result << "                  </div> <!-- transcript_row -->\n"
           else
             unless text.nil?
               result << "                  <div class=\"transcript_row\">\n"
               result << "                    <div class=\"transcript_speaker\">" "</div>\n"
-              result << "                    <div class=\"transcript_utterance\"><span class = \"transcript_notation\">["+ text + "]</span></div>\n"
+              result << "                    <div class=\"transcript_utterance\" id=\""+ timepoint_id+"\"><span class = \"transcript_notation\">["+ text + "]</span></div>\n"
               result << "                  </div> <!-- transcript_row -->\n"
             end
           end
