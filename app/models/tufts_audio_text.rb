@@ -2,7 +2,7 @@ class TuftsAudioText < TuftsBase
   has_file_datastream 'ARCHIVAL_XML', control_group: 'E', original: true
   has_file_datastream 'ARCHIVAL_WAV', control_group: 'E', original: true
   has_file_datastream 'ACCESS_MP3', control_group: 'E'
-  has_metadata "ARCHIVAL_XML", type: TuftsAudioTextMeta
+  has_metadata "ARCHIVAL_XML", type: TuftsTeiMeta
 
   def self.to_class_uri
     'info:fedora/cm:Audio.OralHistory'
