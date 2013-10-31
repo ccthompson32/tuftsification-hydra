@@ -1,4 +1,4 @@
-class TuftsRcrMeta < ActiveFedora::OmDatastream
+class TuftsRcrMeta < TuftsDatastream
 
   set_terminology do |t|
     t.root(:path => "eac-cpf", "xmlns" => "urn:isbn:1-931666-33-4",
