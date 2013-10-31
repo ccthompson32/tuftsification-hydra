@@ -264,7 +264,7 @@ From file_assets/_new.html.haml
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
               if @file_asset.datastreams.include?("Thumbnail.png")
-                send_datastream @file_asset.datastreams["Thumbnail.png"]
+                send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation))
               end
             end
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
@@ -551,36 +551,6 @@ From file_assets/_new.html.haml
       # end
     end
   end
-
-  def showOGG
-    @file_asset = FileAsset.find(params[:id])
-    if (@file_asset.nil?)
-      logger.warn("No such file asset: " + params[:id])
-      flash[:notice]= "No such file asset."
-      redirect_to(:action => 'index', :q => nil, :f => nil)
-    else
-      # get containing object for this FileAsset
-      #pid = @file_asset.container_id
-      pid = params[:id]
-      @downloadable = false
-      # A FileAsset is downloadable iff the user has read or higher access to a parent
-      @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
-      if reader?
-        @downloadable = true
-      end
-
-      mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
-
-      if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
-        if @file_asset.datastreams.include?("ACCESS_OGG")
-          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["ACCESS_OGG"].dsLocation,'ogg',params[:id])
-          send_file(convert_url_to_local_path(path), :type => 'video/ogg')
-        end
-      end
-
-    end
-  end
-
 
   def showWebm
       @file_asset = FileAsset.find(params[:id])

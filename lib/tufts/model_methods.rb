@@ -234,7 +234,7 @@ module Tufts
       ead_title = "Undergraduate scholarship"
     elsif pid.starts_with? "tufts:UA015.012"
       ead_title = "Graduate scholarship"
-    elsif (pid.starts_with? "tufts:PB.001.001") || (pid.starts_with? "tufts:ddennett")
+    elsif (pid.starts_with? "tufts:PB.") || (pid.starts_with? "tufts:ddennett")
       ead_title = "Faculty scholarship"
     elsif pid.starts_with? "tufts:UA069.005.DO"
       ead_title = "Boston Streets"

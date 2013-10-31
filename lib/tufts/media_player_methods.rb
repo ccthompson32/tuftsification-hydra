@@ -59,7 +59,7 @@ module Tufts
        result += "            {file: '/file_assets/webm/" + pid + "', type: 'video/webm'}\n"
        result += "          ],\n"
        result += "          width: 445,\n"
-       result += "          height: 335,\n"
+       result += "          height: 390,\n"
       # result += "          startparam:'starttime',\n"
        result += "          primary: '"+primary+"',\n"
        result += "          controls: true\n"
