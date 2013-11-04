@@ -27,15 +27,15 @@ class DcaAdmin < ActiveFedora::OmDatastream
     Nokogiri::XML('<admin xmlns="http://nils.lib.tufts.edu/dcaadmin/" xmlns:ac="http://purl.org/dc/dcmitype/"/>')
   end
 
-  def to_solr(solr_doc = Hash.new)
-       super
-           unless self.embargo.map.count == 0 || self.embargo.map[0].blank?
-             dt = self.embargo.map[0]
-             iso_date = "#{dt}T13:00:00:00Z"
-             unless iso_date[/^T13/]
-              ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "embargo_dt", iso_date)
-             end
-           end
-       solr_doc
-   end
+  #def to_solr(solr_doc = Hash.new)
+  #     super
+  #        unless self.embargo.map.count == 0 || self.embargo.map[0].blank?
+  #           dt = self.embargo.map[0]
+  #           iso_date = "#{dt}T13:00:00:00Z"
+  #           unless iso_date[/^T13/]
+  #            ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "embargo_dt", iso_date)
+  #           end
+  #         end
+  #     solr_doc
+  # end
 end
