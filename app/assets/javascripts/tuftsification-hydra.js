@@ -1,4 +1,5 @@
 /*
  *= require_self
- *= require_tree .
+ *= require jwplayer6/jwplayer.js
+ *= require_directory ./media_player
 */
