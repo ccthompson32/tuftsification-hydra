@@ -84,6 +84,14 @@ module Tufts
         end
       end
     end
+
+    sources = self.source
+    sources.each do |source|
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'This I Believe', :facetable) if source == 'MS025'
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'Lost Theatres of Somerville', :facetable) if source == 'MS124'
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'West Medford African-American Remembrance Project', :facetable) if source == 'MS123'
+
+    end
   end
 
   def index_subject_info(solr_doc)
