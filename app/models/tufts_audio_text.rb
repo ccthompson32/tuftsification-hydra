@@ -39,4 +39,13 @@ class TuftsAudioText < TuftsBase
       false
     end
   end
+
+
+
+  def to_solr(solr_doc=Hash.new, opts={})
+    solr_doc = super
+    Solrizer.insert_field(solr_doc, 'displays', 'corpora', :stored_searchable)
+    solr_doc
+
+  end
 end
