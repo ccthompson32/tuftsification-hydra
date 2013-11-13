@@ -81,6 +81,7 @@ module Tufts
       subjects.each do |subject|
         if subject == "Bengali Intellectuals Oral History Project" || subject == "Islam on the Indian Ocean Rim" || subject == "Bay of Bengal: Flow of Change"
           titleize_and_index_single(solr_doc, 'corpora_collection', subject, :facetable)
+          titleize_and_index_single(solr_doc, 'corpora_collection', subject, :stored_searchable)
         end
       end
     end
@@ -88,13 +89,17 @@ module Tufts
     types = self.type
     types.each do |type|
       titleize_and_index_single(solr_doc, 'corpora_collection', 'Islam on the Indian Ocean Rim', :facetable) if type == 'MovingImage'
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'Islam on the Indian Ocean Rim', :stored_searchable) if type == 'MovingImage'
     end
 
     sources = self.source
     sources.each do |source|
       titleize_and_index_single(solr_doc, 'corpora_collection', 'This I Believe', :facetable) if source == 'MS025'
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'This I Believe', :stored_searchable) if source == 'MS025'
       titleize_and_index_single(solr_doc, 'corpora_collection', 'Lost Theatres of Somerville', :facetable) if source == 'MS124'
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'Lost Theatres of Somerville', :stored_searchable) if source == 'MS124'
       titleize_and_index_single(solr_doc, 'corpora_collection', 'West Medford African-American Remembrance Project', :facetable) if source == 'MS123'
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'West Medford African-American Remembrance Project', :stored_searchable) if source == 'MS123'
 
     end
   end
