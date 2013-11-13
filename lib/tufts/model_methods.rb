@@ -85,6 +85,11 @@ module Tufts
       end
     end
 
+    types = self.type
+    types.each do |type|
+      titleize_and_index_single(solr_doc, 'corpora_collection', 'Islam on the Indian Ocean Rim', :facetable) if type == 'MovingImage'
+    end
+
     sources = self.source
     sources.each do |source|
       titleize_and_index_single(solr_doc, 'corpora_collection', 'This I Believe', :facetable) if source == 'MS025'
