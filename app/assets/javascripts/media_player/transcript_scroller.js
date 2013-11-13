@@ -2,7 +2,11 @@
 	var lastSeconds = -1;
 
 
-	function scrollTranscript() {
+	function scrollTranscript(evt) {
+
+        if (lastSeconds != -1 && (evt.position < lastSeconds + 3))
+                 return;
+        console.log('scroll transcript ' + seconds + ' last ' + lastSeconds);
 		var seconds = Math.floor(jwplayer().getPosition());
 
 		// Only proceed if the time is different than when this function was last called.
