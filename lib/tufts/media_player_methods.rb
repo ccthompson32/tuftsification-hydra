@@ -1,7 +1,9 @@
 require 'settingslogic'
+require 'sprockets/railtie'
 
 module Tufts
   module MediaPlayerMethods
+  include Sprockets::Helpers::RailsHelper
 
     def self.show_audio_player(pid, withTranscript)
       result = "<div id='player_container'>\n"
@@ -10,7 +12,6 @@ module Tufts
       result += "        </div>\n"
       result += "        <div id='controls'></div>\n"
       result += "      </div>\n"
-      result += "      <script type='text/javascript' src='/assets/jwplayer6/jwplayer.js'></script>\n"
       result += "      <script type='text/javascript'>\n"
       result += "        jwplayer('jw_player').setup({\n"
 
@@ -26,6 +27,7 @@ module Tufts
       result += "          ],\n"
       result += "          width: 240,\n"
       result += "          height: 34,\n" # height <= 30 is the way to tell jwplayer to be audio-only
+      result += "          flashplayer: \"/assets/jwplayer6/jwplayer.flash.swf\",\n" 
       result += "          primary: 'flash',\n"
       result += "          controls: false\n" # this seems to be ignored by jwplayer in audio-only mode
       result += "        });\n"
@@ -42,8 +44,6 @@ module Tufts
        result += "        </div>\n"
        result += "        <div id='controls'></div>\n"
        result += "      </div>\n"
-       result += "      <script type='text/javascript' src='/assets/jwplayer6/jwplayer.js'></script>\n"
-       result += "      <script type='text/javascript' src='/assets/jwplayer6/extras.js'></script>\n"
        result += "      <script type='text/javascript'>\n"
        result += "        jwplayer('jw_player').setup({\n"
 
@@ -60,7 +60,7 @@ module Tufts
        result += "          ],\n"
        result += "          width: 445,\n"
        result += "          height: 390,\n"
-      # result += "          startparam:'starttime',\n"
+       result += "          flashplayer: \"/assets/jwplayer6/jwplayer.flash.swf\",\n" 
        result += "          primary: '"+primary+"',\n"
        result += "          controls: true\n"
        result += "        });\n"
