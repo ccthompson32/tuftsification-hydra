@@ -8,7 +8,6 @@ class TuftsTEI < TuftsBase
 
   def to_solr(solr_doc=Hash.new, opts={})
     super
-    index_sort_fields solr_doc
     return solr_doc
   end
 

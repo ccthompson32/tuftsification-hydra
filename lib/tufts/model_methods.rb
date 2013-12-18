@@ -57,6 +57,72 @@ module Tufts
 
   private
 
+  def index_fulltext(fedora_object, solr_doc)
+    full_text = ""
+
+    # p.datastreams['Archival.xml'].content
+    # doc = Nokogiri::XML(p.datastreams['Archival.xml'].content)
+    # doc.xpath('//text()').text.gsub(/[^0-9A-Za-z]/, ' ')
+    begin
+      models = self.relationships(:has_model)
+    rescue
+      Rails.logger.debug "BAD RDF " + fedora_object.pid.to_s
+    end
+
+    unless models.nil?
+      models.each { |model|
+        case model
+          when "info:fedora/afmodel:TuftsPdf", "info:fedora/cm:Text.FacPub", "info:fedora/afmodel:TuftsFacultyPublication", "info:fedora/cm:Text.PDF"
+            #http://dev-processing01.lib.tufts.edu:8080/tika/TikaPDFExtractionServlet?doc=http://repository01.lib.tufts.edu:8080/fedora/objects/tufts:PB.002.001.00001/datastreams/Archival.pdf/content&amp;chunkList=true'
+            processing_url = Settings.processing_url
+            repository_url = Settings.repository_url
+            unless processing_url == "SKIP"
+             pid = fedora_object.pid.to_s
+             url = processing_url + '/tika/TikaPDFExtractionServlet?doc='+ repository_url +'/fedora/objects/' + pid + '/datastreams/Archival.pdf/content&amp;chunkList=true'
+              puts "#{url}"
+              begin
+                nokogiri_doc = Nokogiri::XML(open(url).read)
+                full_text = nokogiri_doc.xpath('//text()').text.gsub(/[^0-9A-Za-z]/, ' ')
+              rescue => e
+                case e
+                  when OpenURI::HTTPError
+                    puts "HTTPError while indexing full text #{pid}"
+                  when SocketError
+                    puts "SocketError while indexing full text #{pid}"
+                  else
+                    puts "Error while indexing full text #{pid}"
+                end
+              rescue SystemCallError => e
+                if e === Errno::ECONNRESET
+                  puts "Connection Reset while indexing full text #{pid}"
+                else
+                  puts "SystemCallError while indexing full text #{pid}"
+                end
+              end
+            end
+          when "info:fedora/cm:Text.TEI", "info:fedora/afmodel.TuftsTEI", "info:fedora/cm:Audio.OralHistory", "info:fedora/afmodel:TuftsAudioText", "info:fedora/cm:Text.EAD", "info:fedora/afmodel:TuftsEAD", "info:fedora/afmodel:TuftsVideo"
+            #nokogiri_doc = Nokogiri::XML(self.datastreams['Archival.xml'].content)
+            datastream = fedora_object.datastreams["Archival.xml"]
+
+            # some objects have inconsistent name for the datastream
+            if datastream.nil?
+              datastream = fedora_object.datastreams["ARCHIVAL_XML"]
+            end
+
+            unless datastream.nil? || datastream.dsLocation.nil?
+              nokogiri_doc = Nokogiri::XML(File.open(convert_url_to_local_path(datastream.dsLocation)).read)
+              full_text = nokogiri_doc.xpath('//text()').text.gsub(/[^0-9A-Za-z]/, ' ')
+            end
+          else
+            model_s="Unclassified"
+        end
+      }
+    end
+
+    ::Solrizer::Extractor.insert_solr_field_value(solr_doc, "all_text_timv", full_text)
+  end
+
+
   def index_unstemmed_values(solr_doc)
     titleize_and_index_array(solr_doc, 'corpname', self.send(:corpname), :unstemmed_searchable)
     titleize_and_index_array(solr_doc, 'geogname', self.send(:geogname), :unstemmed_searchable)

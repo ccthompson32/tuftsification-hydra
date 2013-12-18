@@ -45,6 +45,10 @@ class TuftsAudioText < TuftsBase
   def to_solr(solr_doc=Hash.new, opts={})
     solr_doc = super
     Solrizer.insert_field(solr_doc, 'displays', 'corpora', :stored_searchable)
+    unless pid[/^tufts:MS165/]
+      Solrizer.insert_field(solr_doc, 'displays', 'dl', :stored_searchable)
+    end
+    index_fulltext self,solr_doc
     solr_doc
 
   end
