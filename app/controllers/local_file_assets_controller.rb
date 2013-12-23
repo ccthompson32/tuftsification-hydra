@@ -1,3 +1,4 @@
+require 'image_size'
 class LocalFileAssetsController < ApplicationController
 
   include Blacklight::Catalog
@@ -412,7 +413,7 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
 
 
 
-    render :json => {:back_url => "#", :item_title => title,:item_date=> temporal,:image_url=> image_url,:item_link=> item_link,:item_description=>description,:width => imagesize.get_height, :height => imagesize.get_width}
+    render :json => {:back_url => "#", :item_title => title,:item_date=> temporal,:image_url=> image_url,:item_link=> item_link,:item_description=>description,:width => imagesize.height, :height => imagesize.width}
   end
   def dimensions
     @file_asset = FileAsset.find(params[:id])
@@ -438,24 +439,24 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImage"))
         if @file_asset.datastreams.include?("Advanced.jpg")
-          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation)).read
+          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation),"rb").read
 
 
-          render :json => {:height => imagesize.get_height, :width => imagesize.get_width}
+          render :json => {:height => imagesize.height, :width => imagesize.width}
         end
       end
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
         if @file_asset.datastreams.include?("Advanced.jpg")
-          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation)).read
-          render :json => {:height => imagesize.get_height, :width => imagesize.get_width}
+          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation),"rb").read
+          render :json => {:height => imagesize.height, :width => imagesize.width}
         end
       end
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsWP"))
         if @file_asset.datastreams.include?("Basic.jpg")
-          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation)).read
-          render :json => {:height => imagesize.get_height, :width => imagesize.get_width}.to_s
+          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation),"rb").read
+          render :json => {:height => imagesize.height, :width => imagesize.width}.to_s
         end
       end
     end
