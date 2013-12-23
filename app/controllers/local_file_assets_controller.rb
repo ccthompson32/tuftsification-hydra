@@ -349,7 +349,7 @@ From file_assets/_new.html.haml
   def image_gallery
     @document_fedora = TuftsTEI.find(params[:id])
     metadata = Tufts::ModelMethods.get_metadata(@document_fedora)
-    title = metadata[:titles].nil? ? "" : metadata[:titles].first.text
+    title = metadata[:titles].nil? ? "" : metadata[:titles].first
     xml = @document_fedora.datastreams["Archival.xml"].ng_xml
     node_sets = xml.xpath('//figure')
     total_length = node_sets.length
@@ -368,7 +368,7 @@ From file_assets/_new.html.haml
           @image = TuftsImage.find(image_pid)
           begin
             image_metadata = Tufts::ModelMethods.get_metadata(@image)
-            image_title = image_metadata[:titles].nil? ? "" : image_metadata[:titles].first.text
+            image_title = image_metadata[:titles].nil? ? "" : image_metadata[:titles].first
             full_title = image_title
             if image_title.length > 20
               image_title = image_title.slice(0,17) + '...'
@@ -383,30 +383,21 @@ From file_assets/_new.html.haml
     end
 
     render :json => {:figures => figures, :count=> total_length,:title=> "Illustrations from the " + title }
-    #metadata = Tufts::ModelMethods.get_metadata(@document_fedora)
-    #title = metadata[:titles].nil? ? "" : metadata[:titles].first.text
-    #temporal = metadata[:temporals].nil? ? "" : metadata[:temporals].first.text
-    #description = metadata[:descriptions].nil? ? "" : metadata[:descriptions].first.text
-    #pid = params[:id]
-    #item_link = '/catalog/' + pid
-    #image_url = '/file_assets/medium/' + pid
-
-
   end
 
   def image_overlay
     @document_fedora = TuftsBase.find(params[:id])
     metadata = Tufts::ModelMethods.get_metadata(@document_fedora)
-    title = metadata[:titles].nil? ? "" : metadata[:titles].first.text
+    title = metadata[:titles].nil? ? "" : metadata[:titles].first
     temporal = if metadata[:temporals].nil? then
                  ""
                else
-                 metadata[:temporals].first.nil? ? "" : metadata[:temporals].first.text
+                 metadata[:temporals].first.nil? ? "" : metadata[:temporals].first
                end
     description = if metadata[:descriptions].nil? then
                     ""
                   else
-                    metadata[:descriptions].first.nil? ? "" : metadata[:descriptions].first.text
+                    metadata[:descriptions].first.nil? ? "" : metadata[:descriptions].first
                   end
     pid = params[:id]
     item_link = '/catalog/' + pid
@@ -415,8 +406,8 @@ From file_assets/_new.html.haml
 
 
 
-
-              imagesize = ImageSize.new File.open(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"].dsLocation)).read
+logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"].dsLocation))
+              imagesize = ImageSize.new File.open(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"].dsLocation),"rb").read
 
 
 
