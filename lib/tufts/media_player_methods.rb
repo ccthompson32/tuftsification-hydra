@@ -100,7 +100,7 @@ module Tufts
     # convert fedora transcript object to html
     def self.show_transcript(fedora_obj, active_timestamps, datastream="ARCHIVAL_XML")
       chunks = TranscriptChunk.parse(fedora_obj, datastream)
-      html = format_transcript(chunks, active_timestamps)
+      html = format_transcript(chunks, active_timestamps, fedora_obj.pid)
       return html
     end
 
@@ -122,7 +122,7 @@ module Tufts
 
     # return html string of the transcript
     # iterate over chunks and create appropriate divs with classes, links, etc.
-    def self.format_transcript(chunks, active_timestamps)
+    def self.format_transcript(chunks, active_timestamps, pid)
       result = "<div class=\"transcript_table\">\n"
       chunks.each do |chunk|
         milliseconds = chunk.start_in_milliseconds
@@ -134,9 +134,9 @@ module Tufts
         unless (milliseconds.nil?)
           result << "                  <div class=\"transcript_row\">\n"
           result << "                    <div class=\"transcript_speaker\">\n"
-
+          #https://corpora.tufts.edu/catalog/tufts:MS025.006.008.00004.00003?timestamp/0:00
           if (active_timestamps)
-            result << "                      <a class=\"transcript_chunk_link\" href=\"javascript:jumpPlayerTo(" + milliseconds.to_s + ");\">" + string_minutes + ":" + string_just_seconds + "</a>\n"
+            result << "                      <a class=\"transcript_chunk_link\" data-time=\"" + milliseconds.to_s + "\" href=\"/catalog/"+ pid + "?timestamp/" + string_minutes + ":" + string_just_seconds + "\">" + string_minutes + ":" + string_just_seconds + "</a>\n"
           else
             result << "                      <span class=\"transcript_chunk_link\">" + string_minutes + ":" + string_just_seconds + "</span>\n"
           end
