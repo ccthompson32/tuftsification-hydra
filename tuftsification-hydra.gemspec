@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_dependency "chronic"
   s.add_dependency "titleize"
   s.add_dependency "settingslogic"
+  s.add_dependency "image_size"
 
   # s.add_dependency "jquery-rails"
 
