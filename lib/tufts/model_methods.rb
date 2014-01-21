@@ -145,17 +145,17 @@ module Tufts
     [:subject, :corpname, :persname, :geogname].each do |subject_field|
       subjects = self.send(subject_field)
       subjects.each do |subject|
-        if subject == "Bengali Intellectuals Oral History Project" || subject == "Islam on the Indian Ocean Rim" || subject == "Bay of Bengal: Flow of Change"
+        if subject == "Bengali Intellectuals Oral History Project" || subject == "Islam on the Indian Ocean Rim" || subject == "Bay of Bengal"
           titleize_and_index_single(solr_doc, 'corpora_collection', subject, :facetable)
           titleize_and_index_single(solr_doc, 'corpora_collection', subject, :stored_searchable)
         end
       end
     end
 
-    types = self.type
-    types.each do |type|
-      titleize_and_index_single(solr_doc, 'corpora_collection', 'Islam on the Indian Ocean Rim', :facetable) if type == 'MovingImage'
-      titleize_and_index_single(solr_doc, 'corpora_collection', 'Islam on the Indian Ocean Rim', :stored_searchable) if type == 'MovingImage'
+    #hack for this one object that doesn't have the right metadata maybe some day it will this is as of 1/21/2014
+    if self.pid == "tufts:MS165.002.001.00001"
+      titleize_and_index_single(solr_doc, 'corpora_collection', "Islam on the Indian Ocean Rim", :facetable)
+      titleize_and_index_single(solr_doc, 'corpora_collection', "Islam on the Indian Ocean Rim", :stored_searchable)
     end
 
     sources = self.source
