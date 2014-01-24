@@ -209,8 +209,13 @@ module Tufts
 
   def index_collection_info(solr_doc)
 
-    collections = self.relationships(:is_member_of_collection)
-    ead = self.relationships(:has_description)
+    begin
+      collections = self.relationships(:is_member_of_collection)
+      ead = self.relationships(:has_description)
+    rescue
+      Rails.logger.error "BAD RDF " + self.pid.to_s
+    end
+
     pid = self.pid.to_s
     ead_title = nil
 
@@ -266,8 +271,14 @@ module Tufts
 
 
   def get_ead_title(document)
-      collections = document.relationships(:is_member_of_collection)
-      ead = document.relationships(:has_description)
+
+      begin
+        collections = document.relationships(:is_member_of_collection)
+        ead = document.relationships(:has_description)
+      rescue
+        Rails.logger.debug "Bad RDF " +  document.pid.to_s
+      end
+
       pid = document.pid.to_s
       ead_title = nil
 
@@ -464,7 +475,13 @@ module Tufts
     #Audio Includes audio, captioned audio, oral history.
 
     def index_format_info(solr_doc)
-      models = self.relationships(:has_model)
+
+      begin
+        models = self.relationships(:has_model)
+      rescue
+        Rails.logger.debug "BAD RDF " + self.pid.to_s
+      end
+
       if models
         models.each do |model|
           insert_object_type(solr_doc, model)
