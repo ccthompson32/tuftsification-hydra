@@ -24,8 +24,9 @@ namespace :tufts do
     task :load do
       ENV["dir"] ||= "#{TuftsificationHydra::Engine.root}/spec/fixtures"
       loader = ActiveFedora::FixtureLoader.new(ENV['dir'])
-      Dir.glob("#{ENV['dir']}/*.foxml.xml").each do |fixture_path|
-        pid = File.basename(fixture_path, ".foxml.xml").sub("_",":")
+
+      Dir.glob("#{ENV['dir']}/tufts_UA069*.foxml.xml").each do |fixture_path|
+        pid = File.basename(fixture_path, ".foxml.xml").sub("_", ":")
         puts fixture_path
         begin
           foo = loader.reload(pid)
@@ -37,9 +38,23 @@ namespace :tufts do
           logger.error("Received a Fedora error while loading #{pid}\n#{e}")
         end
       end
-    end
 
-    desc "Remove default Hydra fixtures"
+        Dir.glob("#{ENV['dir']}/*.foxml.xml").each do |fixture_path|
+          pid = File.basename(fixture_path, ".foxml.xml").sub("_", ":")
+          puts fixture_path
+          begin
+            foo = loader.reload(pid)
+            puts "Updated #{pid}"
+          rescue Errno::ECONNREFUSED => e
+            puts "Can't connect to Fedora! Are you sure jetty is running? (#{ActiveFedora::Base.connection_for_pid(pid).inspect})"
+          rescue Exception => e
+            puts("Received a Fedora error while loading #{pid}\n#{e}")
+            logger.error("Received a Fedora error while loading #{pid}\n#{e}")
+          end
+        end
+      end
+
+      desc "Remove default Hydra fixtures"
     task :delete do
       ENV["dir"] ||= "#{TuftsificationHydra::Engine.root}/spec/fixtures"
       loader = ActiveFedora::FixtureLoader.new(ENV['dir'])
