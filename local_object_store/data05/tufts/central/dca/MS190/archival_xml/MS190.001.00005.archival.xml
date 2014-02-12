@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE TEI.2 PUBLIC "-//TEI P4//DTD Main DTD Driver File//EN" "http://www.tei-c.org/P4X/DTD/tei2.dtd" [
+<!ENTITY % TEI.prose 'INCLUDE'>
+<!ENTITY % TEI.names.dates 'INCLUDE'>
+<!ENTITY % TEI.figures 'INCLUDE'>
+<!ENTITY % TEI.XML 'INCLUDE'>
+]>
+<TEI.2>
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>IG VII 2543-2545 Thebes, IIIrd-IVth century AD. Three epigrams on a sarcophagus</title>
+      </titleStmt>
+      <publicationStmt>
+        <p>Thebes, IIIrd-IVth century AD.</p>        
+      </publicationStmt>
+      <sourceDesc>
+        <p>Leake, 1967, II, 223-225 and pl. IX</p>
+        <p>CIG 1656</p>
+        <p>Trombley, F., 1989, “Boiotia in Late Antiquity: Epigraphic Evidence on Society, Economy, and Christianization”, 
+          in Boiotika, Beister, H. and Buckler, J. eds. Munich.</p>
+      </sourceDesc>
+    </fileDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <div type="eipgram" n="2543">
+        <head>α. 2543</head>
+        <l n="1">My parents cried over my body around the unfeeling grave,</l>
+        <l n="2">since this is the honor due to the dead, but my soul left for its just destination.</l>
+        <l n="3">My name was Nedymos, a gentle child of the Italian Adae.</l>
+        <l n="4">I did not live for a long time, but I was born to live for only a few years;</l>
+        <l n="5">unstable time, you  did not go back, but followed your own course;</l>
+        <l n="6">whatever destiny one is allotted, he fulfills it; and that is the case even for kings.</l>
+        <l n="7">My father Zosimos wrote this for me, and in his longing for me forgot about my immortal soul.</l> 
+      </div>
+      <div type="eipgram" n="2544">
+        <head>β. 2544</head>
+        <l n="1">I am a marble stone, I bear a man in my belly, Nedymos;</l>
+        <l n="2">he is sleeping beautifully and in the company of the dead;</l>
+        <l n="3">the people honored him with a gold crown.</l>
+        <l n="4">The council did this in consolation to his son;</l>
+        <l n="5">the body of a lion crouches over this man dear to Ares.</l>
+        <l n="6">His son Zosimos wrote this, because indeed this is the honor due to the dead...</l>
+        <l n="7">And whoever would dare to place a body in my belly, to separate the father from his son,</l>
+        <l n="8">who I keep in my belly, will be fined a large sum payable to the city and to the treasury.</l>
+      </div>
+      <div type="epigram" n="2545">
+        <head>γ. 2545</head>        
+        <l n="1">My load is full; this is well. For Nedymos lies here in my belly</l>
+        <l n="2">and from this child a son was born, named Nedymos,</l>
+        <l n="3">and now the third, Zosimus, father of this child.</l>
+        <l n="4">Let one of the gods grant me to be closed and without seams;</l>
+        <l n="5">if someone reaches to open me, let his hopes bear no fruit,</l>
+        <l n="6">may he have no grandchildren, but may his whole lineage be completely uprooted.</l>
+      </div>
+    </body>
+  </text>
+</TEI.2>
