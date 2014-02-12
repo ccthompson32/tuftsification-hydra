@@ -28,7 +28,6 @@ xsi:schemaLocation="info:fedora/fedora-system:def/foxml# http://www.fedora.info/
 </foxml:datastream>
 <foxml:datastream ID="DC" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
 <foxml:datastreamVersion ID="DC.1" LABEL="Dublin Core Metadata" CREATED="2014-01-30T19:23:50.022Z" MIMETYPE="text/xml" FORMAT_URI="http://www.openarchives.org/OAI/2.0/oai_dc/" SIZE="1990">
-<foxml:contentDigest TYPE="MD5" DIGEST="8eb572784e20c4f4c573f8943b3910d8"/>
 <foxml:xmlContent>
 <oai_dc:dc xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/"
 xmlns:dc="http://purl.org/dc/elements/1.1/"
@@ -48,7 +47,6 @@ xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.opena
 </foxml:datastream>
 <foxml:datastream ID="DCA-ADMIN" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
 <foxml:datastreamVersion ID="DCA-ADMIN.0" LABEL="DCA Administrative Metadata" CREATED="2014-01-30T19:23:50.023Z" MIMETYPE="text/xml" SIZE="256">
-<foxml:contentDigest TYPE="MD5" DIGEST="9adc4359fbf3195276bcef514ca73636"/>
 <foxml:xmlContent>
 <admin xmlns="http://nils.lib.tufts.edu/dcaadmin/" xmlns:ac="http://purl.org/dc/dcmitype/">
                <steward>dca</steward>
@@ -60,7 +58,6 @@ xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.opena
 </foxml:datastream>
 <foxml:datastream ID="DCA-META" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
 <foxml:datastreamVersion ID="DCA-META.1" LABEL="DCA Descriptive Metadata" CREATED="2014-01-30T19:23:50.023Z" MIMETYPE="text/xml" SIZE="2118">
-<foxml:contentDigest TYPE="MD5" DIGEST="b50a2f557fe50f4f71eac3da84b191b5"/>
 <foxml:xmlContent>
 <dca_dc:dc xmlns:dca_dc="http://nils.lib.tufts.edu/dca_dc/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcatech="http://nils.lib.tufts.edu/dcatech/" xmlns:dcadesc="http://nils.lib.tufts.edu/dcadesc/">
                <dc:title>IG VII 2543-2545 Thebes, IIIrd-IVth century AD. Three epigrams on a sarcophagus</dc:title>
@@ -83,13 +80,11 @@ xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.opena
 </foxml:datastream>
 <foxml:datastream ID="Archival.xml" STATE="A" CONTROL_GROUP="E" VERSIONABLE="true">
 <foxml:datastreamVersion ID="Archival.xml.0" LABEL="IG VII 2543-2545 Thebes, IIIrd-IVth century AD. Three epigrams on a sarcophagus" CREATED="2014-01-30T19:23:50.024Z" MIMETYPE="text/xml">
-<foxml:contentDigest TYPE="MD5" DIGEST="f9e8492c394f680cfbcfc4b7cc382fa6"/>
 <foxml:contentLocation TYPE="URL" REF="http://bucket01.lib.tufts.edu/data05/tufts/central/dca/MS190/archival_xml/MS190.001.00005.archival.xml"/>
 </foxml:datastreamVersion>
 </foxml:datastream>
 <foxml:datastream ID="RELS-EXT" STATE="A" CONTROL_GROUP="X" VERSIONABLE="true">
 <foxml:datastreamVersion ID="RELS-EXT.0" LABEL="Relationships to other objects" CREATED="2014-01-30T19:23:50.024Z" MIMETYPE="text/xml" FORMAT_URI="info:fedora/fedora-system:FedoraRELSExt-1.0" SIZE="1558">
-<foxml:contentDigest TYPE="MD5" DIGEST="05a54c0b03bd2bc33eaf47910b1a3ae6"/>
 <foxml:xmlContent>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:rel="info:fedora/fedora-system:def/relations-external#" xmlns:rcr="http://dca.lib.tufts.edu/ontology/rcr#">
 	              <rdf:Description rdf:about="info:fedora/tufts:MS190.001.00005">
