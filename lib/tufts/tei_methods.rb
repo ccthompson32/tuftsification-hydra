@@ -70,11 +70,11 @@ module Tufts
         end
       end
 
-      node_sets = xml.xpath('/TEI.2/text/body/div1')
+      node_sets = xml.xpath('/TEI.2/text/body/div1|/TEI.2/text/body/div')
 
       unless node_sets.nil?
         node_sets.each do |node|
-          if node['type'] == 'section' || (xml.xpath("//TEI.2/text/body/div1[@id='" + node['id'] + "']/div2").length > 0)
+          if node['type'] == 'section' || (xml.xpath("//TEI.2/text/body/div1[@id='" + (node['id'] || node['n']) + "']/div2").length > 0)
             toc_result += TOC_COLLAPSE_PREDICATE + "<a class='collapse_td' href='/catalog/tei/"+ fedora_obj.pid+"/chapter/"+node['id']+"'>" + node['n'] + "</a>"
             toc_result += "<div class='collapse_content'>"
             toc_result2, chapter_list = self.get_subsection(fedora_obj, node, chapter_list)
@@ -82,7 +82,7 @@ module Tufts
             toc_result += "</div>"
             toc_result += TOC_SUFFIX
           else
-            toc_result += TOC_PREDICATE + "<a href='/catalog/tei/"+ fedora_obj.pid+"/chapter/"+node['id']+"'>" + node['n'] + "</a>" + TOC_SUFFIX
+            toc_result += TOC_PREDICATE + "<a href='/catalog/tei/"+ fedora_obj.pid+"/chapter/"+ (node['id'] || node['n']) +"'>" + node['n'] + "</a>" + TOC_SUFFIX
             chapter_list << node['id']
           end
           #  result << ctext(node)
