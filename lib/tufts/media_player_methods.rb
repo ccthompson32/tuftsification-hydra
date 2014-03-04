@@ -1,9 +1,8 @@
 require 'settingslogic'
-require 'sprockets/railtie'
 
 module Tufts
   module MediaPlayerMethods
-  include Sprockets::Helpers::RailsHelper
+
 
     def self.show_audio_player(pid, withTranscript)
       result = "<div id='player_container'>\n"
