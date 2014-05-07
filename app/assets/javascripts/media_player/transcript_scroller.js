@@ -1,15 +1,19 @@
-	var currentlyHighlightedDiv = null;	
+	var currentlyHighlightedDiv = null;
 	var lastSeconds = -1;
 
 
 	function scrollTranscript(evt) {
-
-        if (lastSeconds != -1 && (evt.position < lastSeconds + 3))
-                 return;
-        console.log('scroll transcript ' + seconds + ' last ' + lastSeconds);
-		var seconds = Math.floor(jwplayer().getPosition());
+		var seconds = Math.floor(evt.position);  // round down to nearest second
 
 		// Only proceed if the time is different than when this function was last called.
+		// JWPlayer calls this method every 1/10th of a second or so;  rounding the position to the nearest
+		// second insures that this event is processed at most once per second.
+		// Note that the comparison with lastSeconds is != instead of > because the player may have been
+		// moved backwards either with the player's << button or in response to a click on an earlier timestamp
+		// in the transcript.
+		// Note that it's better to get the current player position from evt.position rather than by calling
+		// jwplayer().getPosition() ten times a second, which can interfere with the player's ability
+		// to respond to the pause/stop controls.
 		if (seconds != lastSeconds) {
 			lastSeconds = seconds;
 
