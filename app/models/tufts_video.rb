@@ -1,17 +1,13 @@
 class TuftsVideo < TuftsBase
   has_metadata "ARCHIVAL_XML", type: TuftsAudioTextMeta
-  #MK 2011-04-13 - Are we really going to need to access FILE-META from FILE-META.  I'm guessing
-  # not.
+  has_file_datastream 'Thumbnail.png', control_group: 'E'
+  has_file_datastream 'Archival.video', control_group: 'E', original: true
+  has_file_datastream 'Access.webm', control_group: 'E'
+  has_file_datastream 'Access.mp4', control_group: 'E'
 
- # has_metadata :name => "Archival.xml", :type => TuftsRcrMeta
-
-   # Given a datastream name, return the local path where the file can be found.
-  # @example
-  #   obj.file_path('ARCHIVAL_XML', 'tif')
-  #   # => /local_object_store/data01/tufts/central/dca/MS054/archival_xml/MS054.003.DO.02108.archival.tif
   def file_path(name, extension = nil)
     case name
-    when 'ARCHIVAL_WAV', 'ARCHIVAL_XML'
+    when 'Thumbnail.png', 'ARCHIVAL_XML', 'Archival.video','Access.webm','Access.mp4'
       if self.datastreams[name].dsLocation
         self.datastreams[name].dsLocation.sub(Settings.trim_bucket_url + '/' + object_store_path, "")
       else
