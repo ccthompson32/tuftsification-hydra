@@ -65,7 +65,7 @@ From file_assets/_new.html.haml
       @file_asset = create_and_save_file_asset_from_params
       apply_depositor_metadata(@file_asset)
 
-      flash[:notice] = "The file #{params[:Filename]} has been saved in <a href=\"#{asset_url(@file_asset.pid)}\">#{@file_asset.pid}</a>."
+      flash[:retrieval] = "The file #{params[:Filename]} has been saved in <a href=\"#{asset_url(@file_asset.pid)}\">#{@file_asset.pid}</a>."
 
       if !params[:asset_id].nil?
         associate_file_asset_with_container
@@ -79,7 +79,7 @@ From file_assets/_new.html.haml
       # If redirect_params has not been set, use {:action=>:index}
       logger.debug "Created #{@file_asset.pid}."
     else
-      flash[:notice] = "You must specify a file to upload."
+      flash[:retrieval] = "You must specify a file to upload."
     end
 
     if !params[:asset_id].nil?
@@ -124,7 +124,7 @@ From file_assets/_new.html.haml
       @file_asset = TuftsGenericObject.find(params[:id])
       if (@file_asset.nil?)
         logger.warn("No such file asset: " + params[:id])
-        flash[:notice]= "No such file asset."
+        flash[:retrieval]= "No such file asset."
         redirect_to(:action => 'index', :q => nil, :f => nil)
       else
         # get containing object for this FileAsset
@@ -156,11 +156,56 @@ From file_assets/_new.html.haml
     end
     return values
   end
+
+  def showArchival
+    @file_asset = FileAsset.find(params[:id])
+    if (@file_asset.nil?)
+      logger.warn("No such file asset: " + params[:id])
+      flash[:retrieval]= "No such file asset."
+      redirect_to(:action => 'index', :q => nil, :f => nil)
+    elsif (current_user.nil? || !current_user.has_role?(:archivist))
+      logger.warn((current_user.nil? ? "Logged-out" : "Non-archivist") + " user attempted to download high-res image: " + params[:id])
+      flash[:retrieval]= "You do not have permission to view this asset."
+      redirect_to root_path
+    else
+      # get containing object for this FileAsset
+      #pid = @file_asset.container_id
+      pid = params[:id]
+      @downloadable = false
+      # A FileAsset is downloadable iff the user has read or higher access to a parent
+      @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
+      if reader?
+        @downloadable = true
+      end
+
+      mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
+
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsImage"))
+        if @file_asset.datastreams.include?("Archival.tif")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Archival.tif"].dsLocation))
+        end
+      end
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
+        if @file_asset.datastreams.include?("Archival.tif")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Archival.tif"].dsLocation))
+        end
+      end
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsWP"))
+        if @file_asset.datastreams.include?("Archival.tif")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Archival.tif"].dsLocation))
+        end
+      end
+    end
+  end
+
   def showAdvanced
     @file_asset = FileAsset.find(params[:id])
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
-      flash[:notice]= "No such file asset."
+      flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
       # get containing object for this FileAsset
@@ -200,7 +245,7 @@ From file_assets/_new.html.haml
       @file_asset = FileAsset.find(params[:id])
       if (@file_asset.nil?)
         logger.warn("No such file asset: " + params[:id])
-        flash[:notice]= "No such file asset."
+        flash[:retrieval]= "No such file asset."
         redirect_to(:action => 'index', :q => nil, :f => nil)
       else
         # get containing object for this FileAsset
@@ -241,7 +286,7 @@ From file_assets/_new.html.haml
     @file_asset = FileAsset.find(params[:id])
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
-      flash[:notice]= "No such file asset."
+      flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
       # get containing object for this FileAsset
@@ -287,7 +332,7 @@ From file_assets/_new.html.haml
 
       if (@file_asset.nil?)
         logger.warn("No such file asset: " + params[:id])
-        flash[:notice]= "No such file asset."
+        flash[:retrieval]= "No such file asset."
         redirect_to(:action => 'index', :q => nil, :f => nil)
       else
         # get containing object for this FileAsset
@@ -323,7 +368,7 @@ From file_assets/_new.html.haml
 
       if (@file_asset.nil?)
         logger.warn("No such file asset: " + params[:id])
-        flash[:notice]= "No such file asset."
+        flash[:retrieval]= "No such file asset."
         redirect_to(:action => 'index', :q => nil, :f => nil)
       else
         # get containing object for this FileAsset
@@ -421,7 +466,7 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
 
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
-      flash[:notice]= "No such file asset."
+      flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
       # get containing object for this FileAsset
@@ -470,7 +515,7 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
     @file_asset = FileAsset.find(params[:id])
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
-      flash[:notice]= "No such file asset."
+      flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
       # get containing object for this FileAsset
@@ -538,7 +583,7 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
         end
       end
       # else
-      #   flash[:notice]= "You do not have sufficient access privileges to download this document, which has been marked private."
+      #   flash[:retrieval]= "You do not have sufficient access privileges to download this document, which has been marked private."
       #   redirect_to(:action => 'index', :q => nil , :f => nil)
       # end
     end
@@ -548,7 +593,7 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
       @file_asset = FileAsset.find(params[:id])
       if (@file_asset.nil?)
         logger.warn("No such file asset: " + params[:id])
-        flash[:notice]= "No such file asset."
+        flash[:retrieval]= "No such file asset."
         redirect_to(:action => 'index', :q => nil, :f => nil)
       else
         # get containing object for this FileAsset
