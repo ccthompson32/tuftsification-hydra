@@ -145,7 +145,7 @@ module Tufts
     [:subject, :corpname, :persname, :geogname].each do |subject_field|
       subjects = self.send(subject_field)
       subjects.each do |subject|
-        if subject == "Bengali Intellectuals Oral History Project" || subject == "Islam on the Indian Ocean Rim" || subject == "Bay of Bengal"
+        if subject == "Bengali Intellectuals Oral History Project" || subject == "Islam on the Indian Ocean Rim" || subject == "Bay of Bengal" || subject == "Conflict & Natural Resources"
           titleize_and_index_single(solr_doc, 'corpora_collection', subject, :facetable)
           titleize_and_index_single(solr_doc, 'corpora_collection', subject, :stored_searchable)
         end
