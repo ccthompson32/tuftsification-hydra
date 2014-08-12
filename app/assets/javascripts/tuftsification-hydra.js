@@ -6,4 +6,5 @@
  *= require media_player/media_player.js
  *= require media_player/transcript_scroller.js
  *= require media_player/tabs.js
+ *= require read_more_or_less.js
 */
