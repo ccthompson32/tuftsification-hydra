@@ -47,7 +47,6 @@ module Tufts
       toc_result = ""
       xml = fedora_obj.datastreams["Archival.xml"].ng_xml
       node_sets = xml.xpath('/TEI.2/text/front/div1|/TEI.2/text/front/titlePage')
-
       unless node_sets.nil?
         node_sets.each do |node|
           title = "Title Page"
@@ -69,21 +68,21 @@ module Tufts
           chapter_list << (node['id'].nil? ? 'title' : node['id'])
         end
       end
-
+      
       node_sets = xml.xpath('/TEI.2/text/body/div1')
 
       unless node_sets.nil?
         node_sets.each do |node|
-          if node['type'] == 'section' || (xml.xpath("//TEI.2/text/body/div1[@id='" + node['id'] + "']/div2").length > 0)
-            toc_result += TOC_COLLAPSE_PREDICATE + "<a class='collapse_td' href='/catalog/tei/"+ fedora_obj.pid+"/chapter/"+node['id']+"'>" + node['n'] + "</a>"
+          if node['type'].to_s == 'section' || node['type'].to_s == "part" || (xml.xpath("//TEI.2/text/body/div1[@id='" + node['id'].to_s + "']/div2").to_s.length > 0)
+            toc_result += TOC_COLLAPSE_PREDICATE + "<a class='collapse_td' href='/catalog/tei/"+ fedora_obj.pid+"/chapter/"+node['id'].to_s + "'>" + node['n'].to_s + "</a>"
             toc_result += "<div class='collapse_content'>"
             toc_result2, chapter_list = self.get_subsection(fedora_obj, node, chapter_list)
             toc_result += toc_result2
             toc_result += "</div>"
             toc_result += TOC_SUFFIX
           else
-            toc_result += TOC_PREDICATE + "<a href='/catalog/tei/"+ fedora_obj.pid+"/chapter/"+node['id']+"'>" + node['n'] + "</a>" + TOC_SUFFIX
-            chapter_list << node['id']
+            toc_result += TOC_PREDICATE + "<a href='/catalog/tei/"+ fedora_obj.pid + "/chapter/" + node['id'].to_s + "'>" + node['n'].to_s + "</a>" + TOC_SUFFIX
+            chapter_list << node['id'].to_s
           end
           #  result << ctext(node)
         end
@@ -109,20 +108,26 @@ module Tufts
 
     def self.get_subsection(fedora_obj, node, chapter_list)
       result = ""
+      champter_list = ""
       id = node['id']
-      node_sets = node.xpath('/TEI.2/text/body/div1[@id="'+ id +'"]/div2')
+      if id.nil?
+        n = node['n']
+        node_sets = node.xpath('/TEI.2/text/body/div1[@n="'+ n +'"]/div2')
+      else
+        node_sets = node.xpath('/TEI.2/text/body/div1[@id="'+ id +'"]/div2')
+      end
       unless node_sets.nil?
         node_sets.each do |node2|
           unless node2['id'].nil?
-            chapter_title = node2['n']
+            chapter_title = node2['n'].to_s
             chapter_title.nil? ? chapter_title ='[chapter]' : chapter_title
-            result << "<a href='/catalog/tei/"+ fedora_obj.pid+"/chapter/"+node2['id']+"'>" + chapter_title + "</a><br/>"
-            chapter_list << node2['id']
+            result << "<a href='/catalog/tei/"+ fedora_obj.pid + "/chapter/" + node2['id'].to_s + "'>" + chapter_title + "</a><br/>"
+            chapter_list << node2['id'].to_s
           else
-            chapter_title = node2['n']
+            chapter_title = node2['n'].to_s
             chapter_title.nil? ? chapter_title ='[chapter]' : chapter_title
-            result << "<a href='/catalog/tei/" + fedora_obj.pid + "/chapter/" + node['id'] + "'>" + chapter_title + "</a><br/>"
-            chapter_list << node['id']
+            result << "<a href='/catalog/tei/" + fedora_obj.pid + "/chapter/" + node['id'].to_s + "'>" + chapter_title + "</a><br/>"
+            chapter_list << node['id'].to_s
           end
         end
       end
@@ -143,7 +148,7 @@ module Tufts
 
       if chapter == 'title'
         node = node_sets.first
-        if !node.nil?  && node['type'] == 'frontispiece'
+        if !node.nil? && node['type'] == 'frontispiece'
           node = node_sets.to_ary[1]
         end
         result << self.ctext(node)
@@ -182,7 +187,7 @@ module Tufts
     # recursive function to walk the title page stick everything into divs
     def self.ctext(el)
       if el.nil?
-	return ""
+        return ""
       end
       if el.text?
         return el.text
@@ -237,7 +242,15 @@ module Tufts
     end
 
     def self.render_pb(node)
-      result = "<p>" + node['n'] + "</p>"
+     ## if node['n'] == "39"
+     ##   puts "blah"
+     ## end
+      if node['n'].nil?
+        result = ""
+      else
+        result = "<p>" + node['n'] + "</p>"
+      end
+
       result
     end
 
@@ -433,16 +446,16 @@ module Tufts
       result
     end
 
-    def self.render_text_page(fedora_obj, chapter,footnotes)
+    def self.render_text_page(fedora_obj, chapter, footnotes)
       result = self.show_tei_table_start
 #result += "<p>render_text_page</p>" 
-      # get the chapter text.
+# get the chapter text.
       node_sets = fedora_obj.datastreams["Archival.xml"].ng_xml.xpath('//body/div1[@id="' + chapter +'"]/p|//body/div1/div2[@id="' + chapter +'"]/p|//body/div1[@id="' + chapter +'"]/quote|//body/div1/div2[@id="' + chapter +'"]/quote|//body/div1/div2[@id="' + chapter + '"]|//body/div1[@id="' + chapter + '"]')
       in_left_td = true
       unless node_sets.nil?
         if node_sets.first.name == "div1"
-	  node_sets = node_sets.first.children
-	end
+          node_sets = node_sets.first.children
+        end
         node_sets.each do |node|
           node_text = node.text.to_s.strip
           unless node_text.nil? || node_text.empty?
@@ -474,18 +487,30 @@ module Tufts
                 footnotes += footnotes2
                 result += result_p
               when "table"
-                result += render_table(node,in_left_td)
-	      when "list"
-		rensult += "<p></p>"
-	      when "lg"
-		if in_left_td
-		  result += switch_to_right
-		  in_left_td = false
+                result += render_table(node, in_left_td)
+              when "list"
+                result += "<p></p>"
+              when "lg"
+                if in_left_td
+                  result += switch_to_right
+                  in_left_td = false
                 end
                 result += "<td>"
+                begin
                 ls = node.children
                 ls.each do |l|
-		 result += "<p>" + l.text.to_s.strip + "</p>"
+                  result += "<p>" + l.text.to_s.strip + "</p>"
+                end
+                rescue
+                  puts "error #{result}"
+                end
+              when "head"
+                unless result.nil?
+                  begin
+                    result += "<p></p>"
+                  rescue
+                    puts "error #{result}"
+                  end
                 end
               else
                 if in_left_td
@@ -552,11 +577,11 @@ module Tufts
       end
 
       #peek ahead and see if this is an image book if not render it as a standard text book.
-#result +="<p> is chapter image book : "+ (is_chapter_image_book(fedora_obj, chapter).to_s) +"</p>"
+      #result +="<p> is chapter image book : "+ (is_chapter_image_book(fedora_obj, chapter).to_s) +"</p>"
       if is_chapter_image_book(fedora_obj, chapter)
         result += render_image_page(fedora_obj, chapter)
       else
-        result += render_text_page(fedora_obj, chapter,footnotes)
+        result += render_text_page(fedora_obj, chapter, footnotes)
       end
 
       return result
