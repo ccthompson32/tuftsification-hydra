@@ -16,7 +16,6 @@ class LocalFileAssetsController < ApplicationController
   #prepend_before_filter :sanitize_update_params
 
 
-
   def index
 
     if params[:layout] == "false"
@@ -26,7 +25,7 @@ class LocalFileAssetsController < ApplicationController
 
     if params[:asset_id].nil?
       # @solr_result = ActiveFedora::SolrService.instance.conn.query('has_model_field:info\:fedora/afmodel\:FileAsset', @search_params)
-      @solr_result = FileAsset.find_by_solr(:all)
+      @solr_result = TuftsBase.find_by_solr(:all)
     else
       container_uri = "info:fedora/#{params[:asset_id]}"
       escaped_uri = container_uri.gsub(/(:)/, '\\:')
@@ -97,7 +96,7 @@ From file_assets/_new.html.haml
     # if params.has_key?(:container_id)
     #   container = ActiveFedora::Base.load_instance(params[:container_id])
     #   container.file_objects_remove(params[:id])
-    #   FileAsset.garbage_collect(params[:id])
+    #   TuftsBase.garbage_collect(params[:id])
     # else
 
     # The dirty implementation (leaves relationship in container object, deletes regardless of whether the file object has other containers)
@@ -105,60 +104,68 @@ From file_assets/_new.html.haml
     render :text => "Deleted #{params[:id]} from #{params[:asset_id]}."
   end
 
-    def showGeneric
-      #  generic_content = get_values_from_datastream(@document_fedora, "GENERIC-CONTENT", [:item])
-      #  result = ""
-      #  generic_content.each_with_index do |page, index|
-      #    result+="<tr class=\"manifestRow\">"
-      #    file_name = get_values_from_datastream(@document_fedora, "GENERIC-CONTENT", [:item, :fileName])[index]
-      #    link = '/file_assets/generic/' + pid + "/" + String(index)
-      #    mime_type = get_values_from_datastream(@document_fedora, "GENERIC-CONTENT", [:item, :mimeType])[index]
-      #    result+="<td class=\"nameCol\"><a class=\"manifestLink\" href=\"#{link}\">#{file_name}</a></td>"
-      #    result+="<td class=\"mimeCol\">#{mime_type}</td>"
-      #    result+="</tr>"
-      #  end
-      #  return raw(result)
-      #end
-      #match '/file_assets/generic/:id/:index', :to => 'local_file_assets#showGeneric', :constraints => {:id => /.*/}, :as =>'file_asset'
+  def showGeneric
+    #  generic_content = get_values_from_datastream(@document_fedora, "GENERIC-CONTENT", [:item])
+    #  result = ""
+    #  generic_content.each_with_index do |page, index|
+    #    result+="<tr class=\"manifestRow\">"
+    #    file_name = get_values_from_datastream(@document_fedora, "GENERIC-CONTENT", [:item, :fileName])[index]
+    #    link = '/file_assets/generic/' + pid + "/" + String(index)
+    #    mime_type = get_values_from_datastream(@document_fedora, "GENERIC-CONTENT", [:item, :mimeType])[index]
+    #    result+="<td class=\"nameCol\"><a class=\"manifestLink\" href=\"#{link}\">#{file_name}</a></td>"
+    #    result+="<td class=\"mimeCol\">#{mime_type}</td>"
+    #    result+="</tr>"
+    #  end
+    #  return raw(result)
+    #end
+    #match '/file_assets/generic/:id/:index', :to => 'local_file_assets#showGeneric', :constraints => {:id => /.*/}, :as =>'file_asset'
 
-      @file_asset = TuftsGenericObject.find(params[:id])
-      if (@file_asset.nil?)
-        logger.warn("No such file asset: " + params[:id])
-        flash[:retrieval]= "No such file asset."
-        redirect_to(:action => 'index', :q => nil, :f => nil)
-      else
-        # get containing object for this FileAsset
-        pid = params[:id]
-        @downloadable = false
-        # A FileAsset is downloadable iff the user has read or higher access to a parent
-        @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
-        if reader?
-          @downloadable = true
-        end
-        index = Integer(params[:index])
-        file_name = get_values_from_datastream(@file_asset, "GENERIC-CONTENT", [:item, :link])
-        send_file(convert_url_to_local_path(file_name[0]))
-        #if @file_asset.datastreams.include?("Advanced.jpg")
-        #  send_file(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation))
-        #end
-
+    @file_asset = TuftsGenericObject.find(params[:id])
+    if (@file_asset.nil?)
+      logger.warn("No such file asset: " + params[:id])
+      flash[:retrieval]= "No such file asset."
+      redirect_to(:action => 'index', :q => nil, :f => nil)
+    else
+      # get containing object for this TuftsBase
+      pid = params[:id]
+      @downloadable = false
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
+      @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
+      if reader?
+        @downloadable = true
       end
+
+      checkEmbargo
+
+      index = Integer(params[:index])
+      file_name = get_values_from_datastream(@file_asset, "GENERIC-CONTENT", [:item, :link])
+      send_file(convert_url_to_local_path(file_name[0]))
+      #if @file_asset.datastreams.include?("Advanced.jpg")
+      #  send_file(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation))
+      #end
+
     end
-# retrieve field values from datastream.
+  end
+
+  # retrieve field values from datastream.
   # If :values is provided, skips accessing the datastream and returns the contents of :values instead.
   def get_values_from_datastream(resource, datastream_name, field_key, opts={})
     if opts.has_key?(:values)
       values = opts[:values]
-      if values.nil? then values = [opts.fetch(:default, "")] end
+      if values.nil? then
+        values = [opts.fetch(:default, "")]
+      end
     else
       values = resource.get_values_from_datastream(datastream_name, field_key, opts.fetch(:default, ""))
-      if values.empty? then values = [ opts.fetch(:default, "") ] end
+      if values.empty? then
+        values = [opts.fetch(:default, "")]
+      end
     end
     return values
   end
 
   def showArchival
-    @file_asset = FileAsset.find(params[:id])
+    @file_asset = TuftsBase.find(params[:id])
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
       flash[:retrieval]= "No such file asset."
@@ -168,15 +175,17 @@ From file_assets/_new.html.haml
       flash[:retrieval]= "You do not have permission to view this asset."
       redirect_to root_path
     else
-      # get containing object for this FileAsset
+      # get containing object for this TuftsBase
       #pid = @file_asset.container_id
       pid = params[:id]
       @downloadable = false
-      # A FileAsset is downloadable iff the user has read or higher access to a parent
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
       @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
       if reader?
         @downloadable = true
       end
+
+      checkEmbargo
 
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -202,21 +211,23 @@ From file_assets/_new.html.haml
   end
 
   def showAdvanced
-    @file_asset = FileAsset.find(params[:id])
+    @file_asset = TuftsBase.find(params[:id])
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
       flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
-      # get containing object for this FileAsset
+      # get containing object for this TuftsBase
       #pid = @file_asset.container_id
       pid = params[:id]
       @downloadable = false
-      # A FileAsset is downloadable iff the user has read or higher access to a parent
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
       @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
       if reader?
         @downloadable = true
       end
+
+      checkEmbargo
 
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -242,154 +253,162 @@ From file_assets/_new.html.haml
   end
 
   def showMedium
-      @file_asset = FileAsset.find(params[:id])
-      if (@file_asset.nil?)
-        logger.warn("No such file asset: " + params[:id])
-        flash[:retrieval]= "No such file asset."
-        redirect_to(:action => 'index', :q => nil, :f => nil)
-      else
-        # get containing object for this FileAsset
-        #pid = @file_asset.container_id
-        pid = params[:id]
-        @downloadable = false
-        # A FileAsset is downloadable iff the user has read or higher access to a parent
-        @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
-        if reader?
-          @downloadable = true
-        end
-
-        mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
-
-
-        if (mapped_model_names.include?("info:fedora/afmodel:TuftsImage"))
-          if @file_asset.datastreams.include?("Basic.jpg")
-            send_file(convert_url_to_local_path(@file_asset.datastreams["Basic.jpg"].dsLocation))
-          end
-        end
-
-        if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
-          if @file_asset.datastreams.include?("Basic.jpg")
-            send_file(convert_url_to_local_path(@file_asset.datastreams["Basic.jpg"].dsLocation))
-          end
-        end
-
-        if (mapped_model_names.include?("info:fedora/afmodel:TuftsWP"))
-          if @file_asset.datastreams.include?("Basic.jpg")
-            send_file(convert_url_to_local_path(@file_asset.datastreams["Basic.jpg"].dsLocation))
-          end
-        end
-      end
-    end
-
-
-  def showThumb
-    @file_asset = FileAsset.find(params[:id])
+    @file_asset = TuftsBase.find(params[:id])
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
       flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
-      # get containing object for this FileAsset
+      # get containing object for this TuftsBase
       #pid = @file_asset.container_id
       pid = params[:id]
       @downloadable = false
-      # A FileAsset is downloadable iff the user has read or higher access to a parent
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
       @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
       if reader?
         @downloadable = true
       end
+
+      checkEmbargo
+
+      mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
+
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsImage"))
+        if @file_asset.datastreams.include?("Basic.jpg")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Basic.jpg"].dsLocation))
+        end
+      end
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
+        if @file_asset.datastreams.include?("Basic.jpg")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Basic.jpg"].dsLocation))
+        end
+      end
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsWP"))
+        if @file_asset.datastreams.include?("Basic.jpg")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Basic.jpg"].dsLocation))
+        end
+      end
+    end
+  end
+
+
+  def showThumb
+    @file_asset = TuftsBase.find(params[:id])
+    if (@file_asset.nil?)
+      logger.warn("No such file asset: " + params[:id])
+      flash[:retrieval]= "No such file asset."
+      redirect_to(:action => 'index', :q => nil, :f => nil)
+    else
+      # get containing object for this TuftsBase
+      #pid = @file_asset.container_id
+      pid = params[:id]
+      @downloadable = false
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
+      @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
+      if reader?
+        @downloadable = true
+      end
+
+      checkEmbargo
 
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImage"))
         if @file_asset.datastreams.include?("Thumbnail.png")
-          send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation),  :type => 'image/png', :disposition => 'inline')
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation), :type => 'image/png', :disposition => 'inline')
         end
       end
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
-              if @file_asset.datastreams.include?("Thumbnail.png")
-                send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation),  :type => 'image/png', :disposition => 'inline')
-              end
-            end
+        if @file_asset.datastreams.include?("Thumbnail.png")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation), :type => 'image/png', :disposition => 'inline')
+        end
+      end
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
         if @file_asset.datastreams.include?("Thumbnail.png")
-          send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation),  :type => 'image/png', :disposition => 'inline')
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation), :type => 'image/png', :disposition => 'inline')
         end
       end
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsWP"))
         if @file_asset.datastreams.include?("Thumbnail.png")
-          send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation),  :type => 'image/png', :disposition => 'inline')
+          send_file(convert_url_to_local_path(@file_asset.datastreams["Thumbnail.png"].dsLocation), :type => 'image/png', :disposition => 'inline')
         end
       end
     end
   end
 
   def showTranscript
-      @file_asset = FileAsset.find(params[:id])
+    @file_asset = TuftsBase.find(params[:id])
 
-      if (@file_asset.nil?)
-        logger.warn("No such file asset: " + params[:id])
-        flash[:retrieval]= "No such file asset."
-        redirect_to(:action => 'index', :q => nil, :f => nil)
-      else
-        # get containing object for this FileAsset
-        #pid = @file_asset.container_id
-        pid = params[:id]
-        @downloadable = false
-        # A FileAsset is downloadable iff the user has read or higher access to a parent
-        @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
+    if (@file_asset.nil?)
+      logger.warn("No such file asset: " + params[:id])
+      flash[:retrieval]= "No such file asset."
+      redirect_to(:action => 'index', :q => nil, :f => nil)
+    else
+      # get containing object for this TuftsBase
+      #pid = @file_asset.container_id
+      pid = params[:id]
+      @downloadable = false
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
+      @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
 
-        if reader?
-          @downloadable = true
-        end
+      if reader?
+        @downloadable = true
+      end
 
-        mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
+      checkEmbargo
 
-        if (mapped_model_names.include?("info:fedora/afmodel:TuftsAudioText"))
-          if @file_asset.datastreams.include?("ARCHIVAL_XML")
-            send_file(convert_url_to_local_path(@file_asset.datastreams["ARCHIVAL_XML"].dsLocation))
-          end
-        end
+      mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
-        if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
-
-          if @file_asset.datastreams.include?("ARCHIVAL_XML")
-            send_file(convert_url_to_local_path(@file_asset.datastreams["ARCHIVAL_XML"].dsLocation))
-          end
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsAudioText"))
+        if @file_asset.datastreams.include?("ARCHIVAL_XML")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["ARCHIVAL_XML"].dsLocation))
         end
       end
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
+
+        if @file_asset.datastreams.include?("ARCHIVAL_XML")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["ARCHIVAL_XML"].dsLocation))
+        end
+      end
+    end
   end
 
   def showRCR
-      @file_asset = FileAsset.find(params[:id])
+    @file_asset = TuftsBase.find(params[:id])
 
-      if (@file_asset.nil?)
-        logger.warn("No such file asset: " + params[:id])
-        flash[:retrieval]= "No such file asset."
-        redirect_to(:action => 'index', :q => nil, :f => nil)
-      else
-        # get containing object for this FileAsset
-        #pid = @file_asset.container_id
-        pid = params[:id]
-        @downloadable = false
-        # A FileAsset is downloadable iff the user has read or higher access to a parent
-        @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
+    if (@file_asset.nil?)
+      logger.warn("No such file asset: " + params[:id])
+      flash[:retrieval]= "No such file asset."
+      redirect_to(:action => 'index', :q => nil, :f => nil)
+    else
+      # get containing object for this TuftsBase
+      #pid = @file_asset.container_id
+      pid = params[:id]
+      @downloadable = false
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
+      @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
 
-        if reader?
-          @downloadable = true
-        end
+      if reader?
+        @downloadable = true
+      end
 
-        mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
+      checkEmbargo
 
-        if (mapped_model_names.include?("info:fedora/afmodel:TuftsRCR"))
-          if @file_asset.datastreams.include?("RCR-CONTENT")
-            send_file(convert_url_to_local_path(@file_asset.datastreams["RCR-CONTENT"].dsLocation))
-          end
+      mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsRCR"))
+        if @file_asset.datastreams.include?("RCR-CONTENT")
+          send_file(convert_url_to_local_path(@file_asset.datastreams["RCR-CONTENT"].dsLocation))
         end
       end
+    end
   end
 
   def image_gallery
@@ -400,7 +419,7 @@ From file_assets/_new.html.haml
     node_sets = xml.xpath('//figure')
     total_length = node_sets.length
 
-   figures = Array.new
+    figures = Array.new
 
     start = Integer(params[:start])
     end_figure = Integer(params[:number])
@@ -408,30 +427,31 @@ From file_assets/_new.html.haml
     unless node_sets.nil?
       node_sets = node_sets.slice(start, end_figure)
       node_sets.each do |node|
-          image_pid = Tufts::PidMethods.urn_to_pid(node[:n])
-          image_title = ""
-          full_title = ""
-          @image = TuftsImage.find(image_pid)
-          begin
-            image_metadata = Tufts::ModelMethods.get_metadata(@image)
-            image_title = image_metadata[:titles].nil? ? "" : image_metadata[:titles].first
-            full_title = image_title
-            if image_title.length > 20
-              image_title = image_title.slice(0,17) + '...'
-            end
-
-          rescue NoMethodError
-            image_title = ""
+        image_pid = Tufts::PidMethods.urn_to_pid(node[:n])
+        image_title = ""
+        full_title = ""
+        @image = TuftsImage.find(image_pid)
+        begin
+          image_metadata = Tufts::ModelMethods.get_metadata(@image)
+          image_title = image_metadata[:titles].nil? ? "" : image_metadata[:titles].first
+          full_title = image_title
+          if image_title.length > 20
+            image_title = image_title.slice(0, 17) + '...'
           end
 
-        figures <<  {:pid => image_pid, :caption => image_title, :full_title=> full_title }
+        rescue NoMethodError
+          image_title = ""
         end
+
+        figures << {:pid => image_pid, :caption => image_title, :full_title => full_title}
+      end
     end
 
-    render :json => {:figures => figures, :count=> total_length,:title=> "Illustrations from the " + title }
+    render :json => {:figures => figures, :count => total_length, :title => "Illustrations from the " + title}
   end
 
   def image_overlay
+
     @document_fedora = TuftsBase.find(params[:id])
     metadata = Tufts::ModelMethods.get_metadata(@document_fedora)
     title = metadata[:titles].nil? ? "" : metadata[:titles].first
@@ -450,18 +470,15 @@ From file_assets/_new.html.haml
     image_url = '/file_assets/medium/' + pid
 
 
+    logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"].dsLocation))
+    imagesize = ImageSize.new File.open(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"].dsLocation), "rb").read
 
 
-logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"].dsLocation))
-              imagesize = ImageSize.new File.open(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"].dsLocation),"rb").read
-
-
-
-
-    render :json => {:back_url => "#", :item_title => title,:item_date=> temporal,:image_url=> image_url,:item_link=> item_link,:item_description=>description,:width => imagesize.height, :height => imagesize.width}
+    render :json => {:back_url => "#", :item_title => title, :item_date => temporal, :image_url => image_url, :item_link => item_link, :item_description => description, :width => imagesize.height, :height => imagesize.width}
   end
+
   def dimensions
-    @file_asset = FileAsset.find(params[:id])
+    @file_asset = TuftsBase.find(params[:id])
 
 
     if (@file_asset.nil?)
@@ -469,22 +486,24 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
       flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
-      # get containing object for this FileAsset
+      # get containing object for this TuftsBase
       #pid = @file_asset.container_id
       pid = params[:id]
       @downloadable = false
-      # A FileAsset is downloadable iff the user has read or higher access to a parent
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
       @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
       if reader?
         @downloadable = true
       end
+
+      checkEmbargo
 
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImage"))
         if @file_asset.datastreams.include?("Advanced.jpg")
-          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation),"rb").read
+          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation), "rb").read
 
 
           render :json => {:height => imagesize.height, :width => imagesize.width}
@@ -493,14 +512,14 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsImageText"))
         if @file_asset.datastreams.include?("Advanced.jpg")
-          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation),"rb").read
+          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation), "rb").read
           render :json => {:height => imagesize.height, :width => imagesize.width}
         end
       end
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsWP"))
         if @file_asset.datastreams.include?("Basic.jpg")
-          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation),"rb").read
+          imagesize = ImageSize.new File.open(convert_url_to_local_path(@file_asset.datastreams["Advanced.jpg"].dsLocation), "rb").read
           render :json => {:height => imagesize.height, :width => imagesize.width}.to_s
         end
       end
@@ -512,21 +531,23 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
   def show
 
 
-    @file_asset = FileAsset.find(params[:id])
+    @file_asset = TuftsBase.find(params[:id])
     if (@file_asset.nil?)
       logger.warn("No such file asset: " + params[:id])
       flash[:retrieval]= "No such file asset."
       redirect_to(:action => 'index', :q => nil, :f => nil)
     else
-      # get containing object for this FileAsset
+      # get containing object for this TuftsBase
       #pid = @file_asset.container_id
       pid = params[:id]
       @downloadable = false
-      # A FileAsset is downloadable iff the user has read or higher access to a parent
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
       @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
       if reader?
         @downloadable = true
       end
+
+      checkEmbargo
 
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -562,7 +583,7 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
         if @file_asset.datastreams.include?("Access.mp4")
-          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.mp4"].dsLocation,'mp4',params[:id])
+          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.mp4"].dsLocation, 'mp4', params[:id])
           if path[/^http:\/\/bucket01/]
             send_file(convert_url_to_local_path(path), :type => 'video/mp4')
           else
@@ -590,37 +611,48 @@ logger.error(convert_url_to_local_path(@document_fedora.datastreams["Basic.jpg"]
   end
 
   def showWebm
-      @file_asset = FileAsset.find(params[:id])
-      if (@file_asset.nil?)
-        logger.warn("No such file asset: " + params[:id])
-        flash[:retrieval]= "No such file asset."
-        redirect_to(:action => 'index', :q => nil, :f => nil)
-      else
-        # get containing object for this FileAsset
-        #pid = @file_asset.container_id
-        pid = params[:id]
-        @downloadable = false
-        # A FileAsset is downloadable iff the user has read or higher access to a parent
-        @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
-        if reader?
-          @downloadable = true
-        end
-
-        mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
-
-        if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
-          if @file_asset.datastreams.include?("Access.webm")
-            path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.webm"].dsLocation,'webm',params[:id])
-            if path[/^http:\/\/bucket01/]
-              send_file(convert_url_to_local_path(path), :type => 'video/webm')
-                      else
-                        redirect_to path
-                      end
-
-          end
-        end
-
+    @file_asset = TuftsBase.find(params[:id])
+    if (@file_asset.nil?)
+      logger.warn("No such file asset: " + params[:id])
+      flash[:retrieval]= "No such file asset."
+      redirect_to(:action => 'index', :q => nil, :f => nil)
+    else
+      # get containing object for this TuftsBase
+      #pid = @file_asset.container_id
+      pid = params[:id]
+      @downloadable = false
+      # A TuftsBase is downloadable iff the user has read or higher access to a parent
+      @response, @permissions_solr_document = get_solr_response_for_doc_id(pid)
+      if reader?
+        @downloadable = true
       end
+
+      checkEmbargo
+
+      mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
+
+      if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
+        if @file_asset.datastreams.include?("Access.webm")
+          path = VideoDeliveryHelper.render_video_path(@file_asset.datastreams["Access.webm"].dsLocation, 'webm', params[:id])
+          if path[/^http:\/\/bucket01/]
+            send_file(convert_url_to_local_path(path), :type => 'video/webm')
+          else
+            redirect_to path
+          end
+
+        end
+      end
+
     end
+  end
+
+  def checkEmbargo
+    if @file_asset.datastreams["DCA-ADMIN"].under_embargo?
+      logger.warn("No such file asset: " + params[:id])
+      flash[:retrieval]= "No such file asset."
+      redirect_to(:action => 'index', :q => nil, :f => nil)
+    end
+
+  end
 
 end
