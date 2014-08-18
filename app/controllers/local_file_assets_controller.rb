@@ -136,7 +136,7 @@ From file_assets/_new.html.haml
       end
 
       if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
 
       index = Integer(params[:index])
@@ -187,8 +187,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -230,8 +230,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -273,8 +273,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -317,8 +317,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -367,8 +367,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -406,8 +406,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -504,8 +504,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -556,8 +556,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
@@ -637,8 +637,8 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-  if isUnderEmbargo
-         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      if isUnderEmbargo
+        redirect_to(:root, :q => nil, :f => nil) and return false
       end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
