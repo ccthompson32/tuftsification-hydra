@@ -135,7 +135,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
+      if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
 
       index = Integer(params[:index])
       file_name = get_values_from_datastream(@file_asset, "GENERIC-CONTENT", [:item, :link])
@@ -185,8 +187,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
 
@@ -227,8 +230,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
 
@@ -269,8 +273,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
 
@@ -312,8 +317,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
 
@@ -361,8 +367,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsAudioText"))
@@ -399,8 +406,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsRCR"))
@@ -496,8 +504,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
 
@@ -547,8 +556,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsFacultyPublication"))
@@ -627,8 +637,9 @@ From file_assets/_new.html.haml
         @downloadable = true
       end
 
-      checkEmbargo
-
+  if isUnderEmbargo
+         redirect_to(:root, :q=>nil, :f=>nil) and return false
+      end
       mapped_model_names = ModelNameHelper.map_model_names(@file_asset.relationships(:has_model))
 
       if (mapped_model_names.include?("info:fedora/afmodel:TuftsVideo"))
@@ -646,11 +657,11 @@ From file_assets/_new.html.haml
     end
   end
 
-  def checkEmbargo
+  def isUnderEmbargo
     if @file_asset.datastreams["DCA-ADMIN"].under_embargo?
-      logger.warn("No such file asset: " + params[:id])
-      flash[:retrieval]= "No such file asset."
-      redirect_to(:action => 'index', :q => nil, :f => nil)
+      logger.warn("File asset embargoed: " + params[:id])
+      flash[:retrieval]= "File asset embargoed."
+      return true
     end
 
   end
